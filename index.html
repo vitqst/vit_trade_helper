@@ -1,0 +1,265 @@
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>TV Chart GRID: BTUSD</title>
+	<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+	<style>
+		body, html {
+			padding: 0;
+			margin: 0;
+			font-family: 'fontawesome', Calibri, Arial, sans-serif;
+			color: #666;
+			background: #111;
+			min-height: 800px;
+		}
+
+		/* Reset */
+		*,
+		*:after,
+		*:before {
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+		}
+
+		a {
+			color: #ccc;
+			text-decoration: none;
+		}
+
+		a:hover {
+			color: #fff;
+		}
+
+		#indicator-switcher {
+
+		}
+
+		.pair{
+			color: #369ce2;
+			font-weight: 600;
+			font-size: 16px;
+			z-index: 999;
+			margin-left: 5px;
+			position: relative;
+			top: 2px;
+		}
+
+
+		/* GRID LAYOUT */
+
+		.grid {
+			width: 100%;
+			z-index: 100;
+
+		}
+		.module {
+			color: #666;
+			background-color: #222;
+			float: left;
+			width: 50%;
+			height: 50vh;
+		}
+		.module2 {
+			color: #666;
+			background-color: #222;
+			float: left;
+			width: 50%;
+			height: 50vh;
+		}
+		.symbol{
+			display: none;
+			position: fixed;
+			float: left;
+			background: rgba(0,0,0,1);
+			z-index: 1000;
+		}
+		.header{
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			z-index: 10;
+		}
+		.menus {
+			float: left;
+			background:rgba(0,0,0,.8);
+			padding: 0px;
+		}
+
+	</style>
+</head>
+<body>
+
+<div class="header">
+	<div class="menus">
+<!--		<select id="tvConfStudies" multiple="multiple" size="20">-->
+<!--			<option value='ACCD@tv-basicstudies'>Accumulation/Distribution</option>-->
+<!--			<option value='studyADR@tv-basicstudies'>ADR</option>-->
+<!--			<option value='AROON@tv-basicstudies'>Aroon</option>-->
+<!--			<option value='ATR@tv-basicstudies'>Average True Range</option>-->
+<!--			<option value='AwesomeOscillator@tv-basicstudies'>Awesome Oscillator</option>-->
+<!--			<option value='BB@tv-basicstudies'>Bollinger Bands</option>-->
+<!--			<option value='BollingerBandsR@tv-basicstudies'>Bollinger Bands %B</option>-->
+<!--			<option value='BollingerBandsWidth@tv-basicstudies'>Bollinger Bands Width</option>-->
+<!--			<option value='CMF@tv-basicstudies'>Chaikin Money Flow</option>-->
+<!--			<option value='ChaikinOscillator@tv-basicstudies'>Chaikin Oscillator</option>-->
+<!--			<option value='chandeMO@tv-basicstudies'>Chande Momentum Oscillator</option>-->
+<!--			<option value='ChoppinessIndex@tv-basicstudies'>Choppiness Index</option>-->
+<!--			<option value='CCI@tv-basicstudies'>Commodity Channel Index</option>-->
+<!--			<option value='CRSI@tv-basicstudies'>ConnorsRSI</option>-->
+<!--			<option value='CorrelationCoefficient@tv-basicstudies'>Correlation Coefficient</option>-->
+<!--			<option value='DetrendedPriceOscillator@tv-basicstudies'>Detrended Price Oscillator</option>-->
+<!--			<option value='DM@tv-basicstudies'>Directional Movement</option>-->
+<!--			<option value='DONCH@tv-basicstudies'>Donchian Channels</option>-->
+<!--			<option value='DoubleEMA@tv-basicstudies'>Double EMA</option>-->
+<!--			<option value='EaseOfMovement@tv-basicstudies'>Ease Of Movement</option>-->
+<!--			<option value='EFI@tv-basicstudies'>Elder's Force Index</option>-->
+<!--			<option value='ElliottWave@tv-basicstudies'>Elliott Wave</option>-->
+<!--			<option value='ENV@tv-basicstudies'>Envelope</option>-->
+<!--			<option value='FisherTransform@tv-basicstudies'>Fisher Transform</option>-->
+<!--			<option value='HV@tv-basicstudies'>Historical Volatility</option>-->
+<!--			<option value='hullMA@tv-basicstudies'>Hull Moving Average</option>-->
+<!--			<option value='IchimokuCloud@tv-basicstudies'>Ichimoku Cloud</option>-->
+<!--			<option value='KLTNR@tv-basicstudies'>Keltner Channels</option>-->
+<!--			<option value='KST@tv-basicstudies'>Know Sure Thing</option>-->
+<!--			<option value='LinearRegression@tv-basicstudies'>Linear Regression</option>-->
+<!--			<option value='MACD@tv-basicstudies'>MACD</option>-->
+<!--			<option value='MOM@tv-basicstudies'>Momentum</option>-->
+<!--			<option value='MF@tv-basicstudies'>Money Flow</option>-->
+<!--			<option value='MoonPhases@tv-basicstudies'>Moon Phases</option>-->
+<!--			<option value='MASimple@tv-basicstudies'>Moving Average</option>-->
+<!--			<option value='MAExp@tv-basicstudies'>Moving Average Exponentional</option>-->
+<!--			<option value='MAWeighted@tv-basicstudies'>Moving Average Weighted</option>-->
+<!--			<option value='OBV@tv-basicstudies'>On Balance Volume</option>-->
+<!--			<option value='PSAR@tv-basicstudies'>Parabolic SAR</option>-->
+<!--			<option value='PivotPointsHighLow@tv-basicstudies'>Pivot Points High Low</option>-->
+<!--			<option value='PivotPointsStandard@tv-basicstudies'>Pivot Points Standard</option>-->
+<!--			<option value='PriceOsc@tv-basicstudies'>Price Oscillator</option>-->
+<!--			<option value='PriceVolumeTrend@tv-basicstudies'>Price Volume Trend</option>-->
+<!--			<option value='ROC@tv-basicstudies'>Rate Of Change</option>-->
+<!--			<option value='RSI@tv-basicstudies'>Relative Strength Index</option>-->
+<!--			<option value='VigorIndex@tv-basicstudies'>Relative Vigor Index</option>-->
+<!--			<option value='VolatilityIndex@tv-basicstudies'>Relative Volatility Index</option>-->
+<!--			<option value='SMIErgodicIndicator@tv-basicstudies'>SMI Ergodic Indicator</option>-->
+<!--			<option value='SMIErgodicOscillator@tv-basicstudies'>SMI Ergodic Oscillator</option>-->
+<!--			<option value='Stochastic@tv-basicstudies'>Stochastic</option>-->
+<!--			<option value='StochasticRSI@tv-basicstudies'>Stochastic RSI</option>-->
+<!--			<option value='TripleEMA@tv-basicstudies'>Triple EMA</option>-->
+<!--			<option value='Trix@tv-basicstudies'>TRIX</option>-->
+<!--			<option value='UltimateOsc@tv-basicstudies'>Ultimate Oscillator</option>-->
+<!--			<option value='VSTOP@tv-basicstudies'>Volatility Stop</option>-->
+<!--			<option value='Volume@tv-basicstudies'>Volume</option>-->
+<!--			<option value='VWAP@tv-basicstudies'>VWAP</option>-->
+<!--			<option value='MAVolumeWeighted@tv-basicstudies'>VWMA</option>-->
+<!--			<option value='WilliamR@tv-basicstudies'>Williams %R</option>-->
+<!--			<option value='WilliamsAlligator@tv-basicstudies'>Williams Alligator</option>-->
+<!--			<option value='WilliamsFractal@tv-basicstudies'>Williams Fractal</option>-->
+<!--			<option value='ZigZag@tv-basicstudies'>Zig Zag</option>-->
+<!--		</select>-->
+<!--		<label class="pair">BITFINEX: <span class="pair-ticker">BTCUSD</span></label>-->
+	</div>
+</div>
+<script>
+	// https://github.com/nirvanatikku/bittrex-enhanced/blob/master/settings.html
+	const $common = {
+		"autosize": true,
+		"symbol": "BINANCE:RVNUSDT",
+		"interval": "D",
+		"timezone": "Etc/UTC",
+		"theme": "Dark",
+		"style": "1",
+		"locale": "en",
+		"toolbar_bg": "rgba(0, 0, 0, 1)",
+		"enable_publishing": false,
+		"hide_top_toolbar": false,
+		"allow_symbol_change": true,
+		"save_image": false,
+		"hideideas": false,
+		"studies": [
+			'LinearRegression@tv-basicstudies',
+			'RSI@tv-basicstudies',
+			'MASimple@tv-basicstudies',
+		]
+	}
+</script>
+<div class="container">
+	<div class="grid"> <!-- GRID contents BEGIN -->
+		<article class="module">
+			<script type="text/javascript">
+				new TradingView.widget({...$common, "symbol": "BINANCE:RVNUSDT"});
+			</script>
+		</article>
+		<article class="module">
+			<script type="text/javascript">
+				new TradingView.widget({...$common, "symbol": "BINANCE:ALGOUSDT"});
+			</script>
+		</article>
+		<article class="module">
+			<script type="text/javascript">
+				new TradingView.widget({...$common, "symbol": "BINANCE:RVNUSDT", "interval": "60"});
+			</script>
+		</article>
+		<article class="module">
+			<script type="text/javascript">
+				new TradingView.widget({...$common, "symbol": "BINANCE:ALGOUSDT", "interval": "60"});
+			</script>
+		</article>
+	</div> <!-- GRID contents END -->
+</div>
+</body>
+</html>
+
+
+<script>
+	// get ticker from url parameter
+	function getUrlVars() {
+		var vars = {};
+		var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+			vars[key] = value;
+		});
+		return vars;
+	}
+	var $studies = getUrlVars()["studies"];
+	if (!$studies) {
+		$studies = 'BB@tv-basicstudies';
+	}
+	var $ticker = getUrlVars()["ticker"];
+	if (!$ticker) {
+		$ticker = 'BTCUSD';
+	}
+
+	//update page title
+	$('title').html($ticker+' - TV GRID');
+
+	//update page title
+	$('.pair-ticker').html($ticker);
+
+	//update switcher to show correct ticker
+	$('#ticker-switcher').val($ticker);
+
+	//update switcher to show correct ticker
+	$('#studies-switcher').val($studies);
+
+
+	$('#ticker-switcher').change(function(){
+		// get select value
+		$ticker = $(this).val();
+		// refresh page with ticker as url parameter
+		location.href = document.location.protocol +"//"+ document.location.hostname + document.location.pathname + "?ticker=" + $ticker + "&studies=" + $studies;
+	});
+
+
+	$('#studies-switcher').change(function(){
+		// get select value
+		$studies = $(this).val();
+		// refresh page with ticker as url parameter
+		location.href = document.location.protocol +"//"+ document.location.hostname + document.location.pathname + "?ticker=" + $ticker + "&studies=" + $studies;
+	});
+</script>
+
+</body>
+
+</html>

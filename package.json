@@ -1,0 +1,23 @@
+{
+  "name": "josiahleas.github.io",
+  "version": "1.0.0",
+  "description": "### IMPORTANT  Uses TradingView widgets to show many cryptocurrencies, stocks, and foreign exchange markets.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "serve"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JosiahLeas/josiahleas.github.io.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JosiahLeas/josiahleas.github.io/issues"
+  },
+  "homepage": "https://github.com/JosiahLeas/josiahleas.github.io#readme",
+  "dependencies": {
+    "serve": "^11.3.2"
+  }
+}
