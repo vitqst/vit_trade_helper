@@ -21,6 +21,21 @@
 </div>
 <script>
     $(document).ready(() => {
+        function detectMob(defaultWH, fallbackWH) {
+            if (window.innerWidth <= 1081) {
+                if (fallbackWH) {
+                    return fallbackWH
+                }
+
+                return {
+                    w: 12,
+                    h: 3
+                }
+            }
+
+            return defaultWH
+        }
+
         const $common = {
             "autosize": true,
             "symbol": "BINANCE:RVNUSDT",
@@ -52,7 +67,7 @@
         const widgets = [
             // Small
             {
-                w: 3, h: 1,
+                ...detectMob({w: 3, h: 1}, {w: 12, h: 3}),
                 config: {
                     content: `<div id="vue-app">
     <div class="vue-app-container">
@@ -69,7 +84,7 @@
             },
             // Small
             {
-                w: 3, h: 3,
+                ...detectMob({w: 3, h: 3},{w: 4, h: 4}),
                 config: {
                     "interval": "1h",
                     "width": '100%',
@@ -84,7 +99,7 @@
             },
             // Small
             {
-                w: 3, h: 3,
+                ...detectMob({w: 3, h: 3,}, {w: 4, h: 4}),
                 config: {
                     "interval": "1h",
                     "width": '100%',
@@ -99,12 +114,12 @@
             },
             // Small
             {
-                w: 3, h: 3,
+                ...detectMob({w: 3, h: 3}, {w: 4, h: 4}),
                 config: {...$common, "symbol": "BINANCE:BTCUSDT"},
                 type: WIDGET_TYPE.NORMAL
             },
             {
-                w: 3, h: 1,
+                ...detectMob({w: 3, h: 1}, {w: 6, h: 2}),
                 config: {
                     "symbol": "BINANCE:RVNUSDT",
                     "width": "100%",
@@ -116,7 +131,7 @@
                 type: WIDGET_TYPE.Single_Ticker
             },
             {
-                w: 3, h: 1,
+                ...detectMob({w: 3, h: 2}, {w: 6, h: 2}),
                 config: {
                     "symbol": "BINANCE:ALGOUSDT",
                     "width": "100%",
@@ -129,35 +144,35 @@
             },
             // Big
             {
-                w: 6, h: 2,
+                ...detectMob({w: 6, h: 2,}),
                 config: {...$common, "symbol": "BINANCE:RVNUSDT"},
                 type: WIDGET_TYPE.NORMAL
             },
             // Big
             {
-                w: 6, h: 2,
+                ...detectMob({w: 6, h: 2,}),
                 config: {...$common, "symbol": "BINANCE:RVNUSDT", "interval": "60"},
                 type: WIDGET_TYPE.NORMAL
             },
             // Big
             {
-                w: 6, h: 2,
+                ...detectMob({w: 6, h: 2,}),
                 config: {...$common, "symbol": "BINANCE:ALGOUSDT"},
                 type: WIDGET_TYPE.NORMAL
             },
             // Big
             {
-                w: 6, h: 2,
+                ...detectMob({w: 6, h: 2,}),
                 config: {...$common, "symbol": "BINANCE:ALGOUSDT", "interval": "60"},
                 type: WIDGET_TYPE.NORMAL
             },
             {
-                w: 6, h: 2,
+                ...detectMob({w: 6, h: 2,}),
                 config: {...$common, "symbol": "BINANCE:ETHUSDT"},
                 type: WIDGET_TYPE.NORMAL
             },
             {
-                w: 6, h: 2,
+                ...detectMob({w: 6, h: 2,}),
                 config: {...$common, "symbol": "BINANCE:BNBUSDT"},
                 type: WIDGET_TYPE.NORMAL
             },
