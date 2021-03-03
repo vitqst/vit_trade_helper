@@ -54,9 +54,9 @@
                 config: {
                     content: `<div id="vue-app">
     <div class="vue-app-container">
-        <div class="total">TOTAL: {{ roundNum(total) }}</div>
-        <div class="total-realtime">REALTIME TOTAL: {{ roundNum(totalNew) }}</div>
-        <div class="total-realtime">PROFIT: {{ profit }} %</div>
+        <div class="total">TOTAL: {{ roundNum(total) }} USDT</div>
+        <div class="total-realtime">REALTIME TOTAL: {{ roundNum(totalNew) }} USDT</div>
+        <div class="total-realtime">PROFIT: {{ profit.money }} USDT /{{ profit.percent }} %</div>
     </div>
 </div>`
                 },
@@ -212,7 +212,10 @@
                         },
                         profit() {
                             const s = this.totalNew - this.total
-                            return this.roundNum(s/this.total * 100)
+                            return {
+                                money: this.roundNum(s),
+                                percent: this.roundNum(s/this.total * 100),
+                            }
                         }
                     },
                     mounted() {
