@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/JosiahLeas/josiahleas.github.io#readme",
   "dependencies": {
+    "gridstack": "^3.3.0",
     "serve": "^11.3.2"
   }
 }
