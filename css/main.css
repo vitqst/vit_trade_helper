@@ -102,6 +102,25 @@ a:hover {
     padding: 10px;
 }
 
+.vue-app-container .title {
+    font-weight: bold;
+    color: #369ce2;
+}
+
+.vue-app-container .title-total {
+    color: #fff;
+}
+
+.vue-app-container .title.down {
+    color: red;
+    font-weight: normal;
+}
+
+.vue-app-container .title.up {
+    color: green;
+    font-weight: normal;
+}
+
 @media (max-width: 768px) {
     .grid-stack-item {
         position: relative !important;

@@ -67,15 +67,16 @@
         const widgets = [
             // Small
             {
-                ...detectMob({w: 3, h: 1}, {w: 12, h: 3}),
+                ...detectMob({w: 3, h: 1}, {w: 12, h: 2}),
                 config: {
                     content: `<div id="vue-app">
     <div class="vue-app-container">
-        <div class="total">TOTAL: {{ roundNum(total) }} USDT</div>
-        <div class="total-realtime">REALTIME TOTAL: {{ roundNum(totalNew) }} USDT</div>
-        <div class="total-realtime">PROFIT: {{ profit.money }} USDT /{{ profit.percent }} %</div>
+        <div class="total"><span :class="className()">TOTAL:</span> <span class="title-total">{{ roundNum(total) }} USDT</span></div>
+        <div class="total-realtime"><span :class="className()">REALTIME TOTAL:</span> <span class="title-total">{{ roundNum(totalNew) }} USDT</span></div>
+        <div class="total-realtime"><span :class="className()">PROFIT:</span> <span :class="className(profit.money)">{{ profit.money }} USDT /{{ profit.percent }} %</span></div>
+        <div class="title-total">BREAKDOWN PROFIT</div>
         <div v-for="(item, index) in profitBreakDown" :key="index">
-            {{ item.name }}: {{ roundNum(item.gap) }} USDT / {{ roundNum(item.percent) }} % ({{ item.volume }})
+            <span :class="className()">{{ item.name }}:</span> <span :class="className(item.gap)">{{ roundNum(item.gap) }} USDT / {{ roundNum(item.percent) }} % ({{ item.volume }} / {{ roundNum(item.realTimeMoney) }} USDT)</span>
         </div>
     </div>
 </div>`
@@ -131,7 +132,7 @@
                 type: WIDGET_TYPE.Single_Ticker
             },
             {
-                ...detectMob({w: 3, h: 2}, {w: 6, h: 2}),
+                ...detectMob({w: 3, h: 1}, {w: 6, h: 2}),
                 config: {
                     "symbol": "BINANCE:ALGOUSDT",
                     "width": "100%",
@@ -373,6 +374,17 @@
                             }
 
                             return Math.round(number * round) / round
+                        },
+                        className: (number) => {
+                            let df = "title"
+
+                            if (number < 0) {
+                                df = df + " down"
+                            } else if (number >= 0) {
+                                df = df + " up"
+                            }
+
+                            return df
                         }
                     }
                 })
