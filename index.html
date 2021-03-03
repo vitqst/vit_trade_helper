@@ -49,61 +49,26 @@
         }
 
         const widgets = [
+            // Small
             {
-                w: 12, h: 1,
+                w: 4, h: 3,
                 config: {
                     content: `<div id="vue-app">
     <div class="vue-app-container">
         <div class="total">TOTAL: {{ roundNum(total) }} USDT</div>
         <div class="total-realtime">REALTIME TOTAL: {{ roundNum(totalNew) }} USDT</div>
         <div class="total-realtime">PROFIT: {{ profit.money }} USDT /{{ profit.percent }} %</div>
+        <div v-for="(item, index) in profitBreakDown" :key="index">
+            {{ item.name }}: {{ item.gap }} USDT / {{ item.percent }} %
+        </div>
     </div>
 </div>`
                 },
                 type: WIDGET_TYPE.Custom
             },
-            // Big - 1
-            {
-                w: 5, h: 3,
-                config: {...$common, "symbol": "BINANCE:RVNUSDT"},
-                type: WIDGET_TYPE.NORMAL
-            },
-            // Big - 2
+            // Small
             {
                 w: 4, h: 3,
-                config: {...$common, "symbol": "BINANCE:RVNUSDT", "interval": "60"},
-                type: WIDGET_TYPE.NORMAL
-            },
-            // Small - 1
-            {
-                w: 3, h: 3,
-                config: {
-                    "interval": "1h",
-                    "width": '100%',
-                    "isTransparent": false,
-                    "height": '100%',
-                    "symbol": "BINANCE:RVNUSDT",
-                    "showIntervalTabs": true,
-                    "locale": "en",
-                    "colorTheme": "dark"
-                },
-                type: WIDGET_TYPE.Technical_Analysis
-            },
-            // Big - 3
-            {
-                w: 5, h: 3,
-                config: {...$common, "symbol": "BINANCE:ALGOUSDT", "interval": "60"},
-                type: WIDGET_TYPE.NORMAL
-            },
-            // Big - 4
-            {
-                w: 4, h: 3,
-                config: {...$common, "symbol": "BINANCE:ALGOUSDT"},
-                type: WIDGET_TYPE.NORMAL
-            },
-            // Small - 2
-            {
-                w: 3, h: 3,
                 config: {
                     "interval": "1h",
                     "width": '100%',
@@ -116,15 +81,59 @@
                 },
                 type: WIDGET_TYPE.Technical_Analysis
             },
-
+            // Small
             {
-                w: 3, h: 3,
+                w: 4, h: 3,
+                config: {
+                    "interval": "1h",
+                    "width": '100%',
+                    "isTransparent": false,
+                    "height": '100%',
+                    "symbol": "BINANCE:RVNUSDT",
+                    "showIntervalTabs": true,
+                    "locale": "en",
+                    "colorTheme": "dark"
+                },
+                type: WIDGET_TYPE.Technical_Analysis
+            },
+            // Big
+            {
+                w: 6, h: 3,
+                config: {...$common, "symbol": "BINANCE:RVNUSDT"},
+                type: WIDGET_TYPE.NORMAL
+            },
+            // Big
+            {
+                w: 6, h: 3,
+                config: {...$common, "symbol": "BINANCE:RVNUSDT", "interval": "60"},
+                type: WIDGET_TYPE.NORMAL
+            },
+            // Big
+            {
+                w: 6, h: 3,
+                config: {...$common, "symbol": "BINANCE:ALGOUSDT", "interval": "60"},
+                type: WIDGET_TYPE.NORMAL
+            },
+            // Big
+            {
+                w: 6, h: 3,
                 config: {...$common, "symbol": "BINANCE:ALGOUSDT"},
                 type: WIDGET_TYPE.NORMAL
             },
+            // Small
             {
-                w: 3, h: 3,
-                config: {...$common, "symbol": "BINANCE:ALGOUSDT"},
+                w: 4, h: 3,
+                config: {...$common, "symbol": "BINANCE:BTCUSDT"},
+                type: WIDGET_TYPE.NORMAL
+            },
+            {
+                w: 4, h: 3,
+                config: {...$common, "symbol": "BINANCE:ETHUSDT"},
+                type: WIDGET_TYPE.NORMAL
+            },
+            {
+                w: 4, h: 3,
+                config: {...$common, "symbol": "BINANCE:BNBUSDT"},
                 type: WIDGET_TYPE.NORMAL
             },
         ]
@@ -216,6 +225,39 @@
                                 money: this.roundNum(s),
                                 percent: this.roundNum(s/this.total * 100),
                             }
+                        },
+                        profitBreakDown() {
+                            let wlBreakDown = {}
+
+                            for (const item of this.wallet) {
+                                if (wlBreakDown[item.name]) {
+                                    wlBreakDown[item.name] = {
+                                        money: wlBreakDown[item.name].money + item.volume * item.price,
+                                        volume: wlBreakDown[item.name].volume + item.volume,
+                                    }
+                                } else {
+                                    wlBreakDown[item.name] = {
+                                        money: item.volume * item.price,
+                                        volume: item.volume
+                                    }
+                                }
+                            }
+
+                            for (const [coinName, item] of Object.entries(wlBreakDown)) {
+
+                                const realTimeMoney = item.volume * this.priceRealTime[coinName]
+
+                                wlBreakDown[coinName] = {
+                                    ...wlBreakDown[coinName],
+                                    realTimeMoney,
+                                    gap: realTimeMoney - item.money,
+                                    percent: ((realTimeMoney - item.money)/item.money) * 100,
+                                    name: coinName
+                                }
+                            }
+
+
+                            return Object.values(wlBreakDown)
                         }
                     },
                     mounted() {
@@ -295,4 +337,4 @@
     })
 </script>
 </body>
-</html>
+</html>                          
