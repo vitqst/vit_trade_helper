@@ -157,7 +157,7 @@ $(document).ready(() => {
                 "symbol": "BINANCE:ETHUSDT",
             },
             type: WIDGET_TYPE.SINGLE_TICKER,
-            mobileSort: 70,
+            mobileSort: 90,
         },
         {
             ...detectMob({w: 6, h: 3,}),
