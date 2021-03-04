@@ -60,9 +60,9 @@ $(document).ready(() => {
 
     const WIDGET_TYPE = {
         NORMAL: 0,
-        Technical_Analysis: 1,
+        TECHNICAL_ANALYSIS: 1,
         Custom: 2,
-        Single_Ticker: 3
+        SINGLE_TICKER: 3
     }
 
     const widgets = [
@@ -87,7 +87,8 @@ $(document).ready(() => {
     </div>
 </div>`
             },
-            type: WIDGET_TYPE.Custom
+            type: WIDGET_TYPE.Custom,
+            mobileSort: 100,
         },
         {
             ...detectMob({w: 3, h: 3}, {w: 6, h: 5}),
@@ -95,7 +96,8 @@ $(document).ready(() => {
                 ...$commonSingleTicker,
                 "symbol": "BINANCE:ALGOUSDT",
             },
-            type: WIDGET_TYPE.Technical_Analysis
+            type: WIDGET_TYPE.TECHNICAL_ANALYSIS,
+            mobileSort: 80,
         },
         {
             ...detectMob({w: 3, h: 3,}, {w: 6, h: 5}),
@@ -103,7 +105,8 @@ $(document).ready(() => {
                 ...$commonSingleTicker,
                 "symbol": "BINANCE:RVNUSDT",
             },
-            type: WIDGET_TYPE.Technical_Analysis
+            type: WIDGET_TYPE.TECHNICAL_ANALYSIS,
+            mobileSort: 80,
         },
         {
             ...detectMob({w: 3, h: 1}, {w: 6, h: 2}),
@@ -111,7 +114,8 @@ $(document).ready(() => {
                 ...$commonSingleTicker,
                 "symbol": "BINANCE:BTCUSDT",
             },
-            type: WIDGET_TYPE.Single_Ticker
+            type: WIDGET_TYPE.SINGLE_TICKER,
+            mobileSort: 90,
         },
         {
             ...detectMob({w: 3, h: 1}, {w: 6, h: 2}),
@@ -119,7 +123,8 @@ $(document).ready(() => {
                 ...$commonSingleTicker,
                 "symbol": "BINANCE:ALGOUSDT",
             },
-            type: WIDGET_TYPE.Single_Ticker
+            type: WIDGET_TYPE.SINGLE_TICKER,
+            mobileSort: 95,
         },
         {
             ...detectMob({w: 3, h: 1}, {w: 6, h: 2}),
@@ -127,7 +132,8 @@ $(document).ready(() => {
                 ...$commonSingleTicker,
                 "symbol": "BINANCE:BNBUSDT",
             },
-            type: WIDGET_TYPE.Single_Ticker
+            type: WIDGET_TYPE.SINGLE_TICKER,
+            mobileSort: 90,
         },
         {
             ...detectMob({w: 3, h: 1}, {w: 6, h: 2}),
@@ -135,12 +141,14 @@ $(document).ready(() => {
                 ...$commonSingleTicker,
                 "symbol": "BINANCE:RVNUSDT",
             },
-            type: WIDGET_TYPE.Single_Ticker
+            type: WIDGET_TYPE.SINGLE_TICKER,
+            mobileSort: 95,
         },
         {
             ...detectMob({w: 6, h: 3,}),
             config: {...$common, "symbol": "BINANCE:ALGOUSDT"},
-            type: WIDGET_TYPE.NORMAL
+            type: WIDGET_TYPE.NORMAL,
+            mobileSort: 70,
         },
         {
             ...detectMob({w: 3, h: 1}, {w: 12, h: 2}),
@@ -148,42 +156,50 @@ $(document).ready(() => {
                 ...$commonSingleTicker,
                 "symbol": "BINANCE:ETHUSDT",
             },
-            type: WIDGET_TYPE.Single_Ticker
+            type: WIDGET_TYPE.SINGLE_TICKER,
+            mobileSort: 70,
         },
         {
             ...detectMob({w: 6, h: 3,}),
             config: {...$common, "symbol": "BINANCE:ALGOUSDT"},
-            type: WIDGET_TYPE.NORMAL
+            type: WIDGET_TYPE.NORMAL,
+            mobileSort: 72,
         },
         {
             ...detectMob({w: 6, h: 3,}),
             config: {...$common, "symbol": "BINANCE:RVNUSDT"},
-            type: WIDGET_TYPE.NORMAL
+            type: WIDGET_TYPE.NORMAL,
+            mobileSort: 73,
         },
         {
             ...detectMob({w: 6, h: 3,}),
             config: {...$common, "symbol": "BINANCE:RVNUSDT", "interval": "60"},
-            type: WIDGET_TYPE.NORMAL
+            type: WIDGET_TYPE.NORMAL,
+            mobileSort: 73,
         },
         {
             ...detectMob({w: 6, h: 3,}),
             config: {...$common, "symbol": "BINANCE:ETHUSDT"},
-            type: WIDGET_TYPE.NORMAL
+            type: WIDGET_TYPE.NORMAL,
+            mobileSort: 70,
         },
         {
             ...detectMob({w: 6, h: 3,}),
             config: {...$common, "symbol": "BINANCE:ALGOUSDT", "interval": "60"},
-            type: WIDGET_TYPE.NORMAL
+            type: WIDGET_TYPE.NORMAL,
+            mobileSort: 72,
         },
         {
             ...detectMob({w: 6, h: 3,}),
             config: {...$common, "symbol": "BINANCE:BNBUSDT"},
-            type: WIDGET_TYPE.NORMAL
+            type: WIDGET_TYPE.NORMAL,
+            mobileSort: 70,
         },
         {
             ...detectMob({w: 6, h: 3,}),
             config: {...$common, "symbol": "BINANCE:BTCUSDT"},
-            type: WIDGET_TYPE.NORMAL
+            type: WIDGET_TYPE.NORMAL,
+            mobileSort: 70,
         },
     ]
 
@@ -198,9 +214,10 @@ $(document).ready(() => {
             w: item.w,
             h: item.h,
             content: `<div class="full-wh" style="background: #1e222d"><div id="widget-${k}" class="full-wh grid-stack-item_content-js"></div></div>`,
+            mobileSort: item.mobileSort
         }
     })
-    grid.load(isMobile ? widgetsGrid.reverse() : widgetsGrid);
+    grid.load(isMobile ? widgetsGrid.sort((a, b) => a.mobileSort - b.mobileSort) : widgetsGrid);
 
     widgets.map((item, k) => {
         const widgetId = `widget-${k}`
@@ -215,7 +232,7 @@ $(document).ready(() => {
             }
         }
 
-        if (item.type === WIDGET_TYPE.Technical_Analysis) {
+        if (item.type === WIDGET_TYPE.TECHNICAL_ANALYSIS) {
             const script = document.createElement('script')
             script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js'
             script.async = true
@@ -223,7 +240,7 @@ $(document).ready(() => {
             document.getElementById(widgetId).appendChild(script)
         }
 
-        if (item.type === WIDGET_TYPE.Single_Ticker) {
+        if (item.type === WIDGET_TYPE.SINGLE_TICKER) {
             const script = document.createElement('script')
             script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js'
             script.async = true
@@ -458,9 +475,6 @@ $(document).ready(() => {
 
     if (isMobile) {
         setTimeout(() => {
-            document.getElementsByClassName('custom-item')[0].style.height = '300px'
-            document.getElementsByClassName('custom-item')[0].style.minHeight = '300px'
-
             const a = [...(document.getElementsByClassName('custom-item'))].map(item => {
                 const height = item.getElementsByClassName('grid-stack-item_content-js')[0].firstChild.style.height
 
@@ -468,10 +482,13 @@ $(document).ready(() => {
                     item.style.height = `calc(30px + ${height})`
                     item.style.minHeight = `calc(30px + ${height})`
                 } else {
-                    item.style.height = `${item.offsetHeight + 30}px`
-                    item.style.minHeight = `${item.offsetHeight + 30}px`
+                    item.style.height = `${item.offsetHeight + 40}px`
+                    item.style.minHeight = `${item.offsetHeight + 40}px`
                 }
             })
+
+            document.getElementsByClassName('custom-item')[0].style.height = '250px'
+            document.getElementsByClassName('custom-item')[0].style.minHeight = '250px'
         }, 1000)
     }
 })

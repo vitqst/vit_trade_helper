@@ -122,6 +122,10 @@ a:hover {
     font-weight: normal;
 }
 
+.grid-stack-item .grid-stack-item-content::-webkit-scrollbar {
+    display: none;
+}
+
 @media (max-width: 768px) {
     .grid-stack-item {
         position: relative !important;
