@@ -135,6 +135,22 @@ a:hover {
     .grid-stack {
         height: auto !important;
     }
+
+    .grid-stack-item-content > .full-wh {
+        position: relative;
+    }
+
+    .grid-stack-item-content > .full-wh .lock-widget {
+        position: absolute;
+        top: 0;
+        right: 50%;
+        bottom: 0;
+        left: 0;
+    }
+
+    .vue-app-container .div {
+        font-size: 0.7rem;
+    }
 }
 
 .slide-fade-enter-active {

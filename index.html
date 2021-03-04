@@ -220,7 +220,7 @@
             return {
                 w: item.w,
                 h: item.h,
-                content: `<div class="full-wh" style="background: #1e222d"><div id="widget-${k}" class="full-wh grid-stack-item_content-js"></div></div>`,
+                content: `<div class="full-wh" style="background: #1e222d"><div id="widget-${k}" class="full-wh grid-stack-item_content-js"></div><div class="lock-widget"></div></div>`,
             }
         })
         grid.load(isMobile ? widgetsGrid.reverse() : widgetsGrid);
@@ -481,18 +481,18 @@
 
         if (isMobile) {
             setTimeout(() => {
-                document.getElementsByClassName('custom-item')[0].style.height = '200px'
-                document.getElementsByClassName('custom-item')[0].style.minHeight = '200px'
+                document.getElementsByClassName('custom-item')[0].style.height = '250px'
+                document.getElementsByClassName('custom-item')[0].style.minHeight = '250px'
 
                 const a = [...(document.getElementsByClassName('custom-item'))].map(item => {
                     const height = item.getElementsByClassName('grid-stack-item_content-js')[0].firstChild.style.height
 
                     if (height && height !== '100%') {
-                        item.style.height = height
-                        item.style.minHeight = height
+                        item.style.height = `calc(20px + ${height})`
+                        item.style.minHeight = `calc(20px + ${height})`
                     }
                 })
-            }, 3000)
+            }, 1000)
         }
     })
 </script>
