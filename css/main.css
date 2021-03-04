@@ -94,17 +94,27 @@ a:hover {
 }
 
 #vue-app {
-    background: #111;
     height: 100%;
 }
 
 .vue-app-container {
     padding: 10px;
+    position: relative;
+}
+
+.vue-app-container button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
 
 .vue-app-container .title {
     font-weight: bold;
     color: #369ce2;
+}
+
+.vue-app-container > div {
+    padding: 2px 0 2px 0;
 }
 
 .vue-app-container .title-total {
@@ -137,4 +147,15 @@ a:hover {
     .grid-stack {
         height: auto !important;
     }
+}
+
+.slide-fade-enter-active {
+    transition: all .2s ease;
+}
+.slide-fade-leave-active {
+    transition: all .2s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to
+    /* .slide-fade-leave-active for <2.1.8 */ {
+    color: #fff !important;
 }
