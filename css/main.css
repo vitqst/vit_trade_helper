@@ -108,6 +108,7 @@ a:hover {
 }
 
 .vue-app-container .title-total {
+    font-size: 0.8rem;
     color: #fff;
 }
 
@@ -140,17 +141,25 @@ a:hover {
         position: relative;
     }
 
-    .grid-stack-item-content > .full-wh .lock-widget {
-        position: absolute;
-        top: 0;
-        right: 50%;
-        bottom: 0;
-        left: 0;
-    }
-
     .vue-app-container .div {
         font-size: 0.7rem;
     }
+
+    .container {
+        position: relative;
+    }
+
+    .container > .scroll-mobile-area {
+        position: absolute;
+        top: 0;
+        right: 70%;
+        bottom: 0;
+        left: 0;
+        z-index: 999999;
+        background: rgba(255, 255, 255, 0.005);
+    }
+
+
 }
 
 .slide-fade-enter-active {

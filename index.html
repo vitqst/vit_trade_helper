@@ -20,6 +20,7 @@
 <body>
 
 <div class="container">
+    <div class="scroll-mobile-area"></div>
     <div class="grid-stack full-wh">
     </div>
 </div>
@@ -215,12 +216,15 @@
 
         const grid = GridStack.init({
             itemClass: 'custom-item',
+            draggable: {
+                scroll: false
+            }
         });
         const widgetsGrid = widgets.map((item, k) => {
             return {
                 w: item.w,
                 h: item.h,
-                content: `<div class="full-wh" style="background: #1e222d"><div id="widget-${k}" class="full-wh grid-stack-item_content-js"></div><div class="lock-widget"></div></div>`,
+                content: `<div class="full-wh" style="background: #1e222d"><div id="widget-${k}" class="full-wh grid-stack-item_content-js"></div></div>`,
             }
         })
         grid.load(isMobile ? widgetsGrid.reverse() : widgetsGrid);
@@ -481,15 +485,18 @@
 
         if (isMobile) {
             setTimeout(() => {
-                document.getElementsByClassName('custom-item')[0].style.height = '250px'
-                document.getElementsByClassName('custom-item')[0].style.minHeight = '250px'
+                document.getElementsByClassName('custom-item')[0].style.height = '300px'
+                document.getElementsByClassName('custom-item')[0].style.minHeight = '300px'
 
                 const a = [...(document.getElementsByClassName('custom-item'))].map(item => {
                     const height = item.getElementsByClassName('grid-stack-item_content-js')[0].firstChild.style.height
 
                     if (height && height !== '100%') {
-                        item.style.height = `calc(20px + ${height})`
-                        item.style.minHeight = `calc(20px + ${height})`
+                        item.style.height = `calc(30px + ${height})`
+                        item.style.minHeight = `calc(30px + ${height})`
+                    } else {
+                        item.style.height = `${item.offsetHeight + 30}px`
+                        item.style.minHeight = `${item.offsetHeight + 30}px`
                     }
                 })
             }, 1000)
