@@ -82,14 +82,14 @@
                 config: {
                     content: `<div id="vue-app">
     <div class="vue-app-container">
-        <div class="total"><span :class="className()">Total invested:</span> <span class="title-total">{{ roundNum(total) }} USDT</span></div>
-        <div class="total-realtime"><span :class="className()">Equity value :</span> <span class="title-total">{{ roundNum(totalNew) }} USDT</span></div>
-        <div class="total-realtime"><span :class="className()">Gap:</span> <transition name="slide-fade" mode="out-in"><span :key="profit.percent" :class="className(profit.money)">{{ profit.money }} USDT / {{ profit.percent }} %</span></div></trainsition>
+        <div class="total"><span :class="className()">Total invested:</span> <span class="title-total">{{ roundNum(total) }} USDT | {{ roundNum(convertUSTCtoVND(total)) }} VND</span></div>
+        <div class="total-realtime"><span :class="className()">Equity value :</span> <span class="title-total">{{ roundNum(totalNew) }} USDT | {{ roundNum(convertUSTCtoVND(totalNew)) }} VND</span></div>
+        <div class="total-realtime"><span :class="className()">Gap:</span> <transition name="slide-fade" mode="out-in"><span :key="profit.percent" :class="className(profit.money)">{{ profit.money }} USDT | {{ roundNum(convertUSTCtoVND(profit.money)) }} VND / {{ profit.percent }} %</span></div></trainsition>
         <div class="title-total" style="padding: 2px 0 2px 0; font-weight: bold; font-size: 1.1rem">Breakdown profit & loss</div>
         <div v-for="(item, index) in profitBreakDown" :key="index">
             <span :class="className()">{{ item.name }}:</span>
             <transition name="slide-fade" mode="out-in">
-                <span :class="className(item.gap)" :key="item.percent">{{ roundNum(item.gap) }} USDT / {{ roundNum(item.percent) }} % ({{ item.volume }} / {{ roundNum(item.realTimeMoney) }} USDT)</span>
+                <span :class="className(item.gap)" :key="item.percent" style="font-size: 0.8rem">{{ roundNum(item.gap) }} USDT | {{ roundNum(convertUSTCtoVND(item.gap)) }} VND / {{ roundNum(item.percent) }} % ({{ item.volume }} / {{ roundNum(item.realTimeMoney) }} USDT)</span>
             </transition>
         </div>
 
@@ -230,6 +230,7 @@
                 document.getElementById(widgetId).appendChild(script)
             }
 
+            // --------------------------------------------------------------------------------------------------------- BEGIN VUEJS APPLICATION
             if (item.type === WIDGET_TYPE.Custom) {
                 document.getElementById(widgetId).innerHTML = item.config.content
 
@@ -269,7 +270,8 @@
                                 volume: 97.72,
                                 price: 1.0577
                             },
-                        ]
+                        ],
+                        priceUstcToBvnd: 24000,
                     },
                     computed: {
                         totalNew() {
@@ -342,6 +344,7 @@
                         }
 
                         this.getCoinList()
+                        setInterval(this.getUSTCToVND, 10000)
                     },
                     methods: {
                         getCoinList: function () {
@@ -409,7 +412,7 @@
                                 round = round * 10
                             }
 
-                            return Math.round(number * round) / round
+                            return Number(Math.round(number * round) / round).toLocaleString()
                         },
                         className: (number) => {
                             let df = "title"
@@ -427,6 +430,24 @@
                                 RVN: this.priceRealTime.RVN + 0.1,
                                 ALGO: this.priceRealTime.ALGO + 0.2,
                             }
+                        },
+                        getUSTCToVND() {
+                            fetch('https://min-api.cryptocompare.com/data/price?fsym=USDT&tsyms=BVND').then(
+                                response => {
+                                    if (response.ok) {
+                                        response.json().then(
+                                            json => {
+                                                this.priceUstcToBvnd = json.USDT.BVND
+                                            }
+                                        )
+                                    } else {
+                                        alert('HTTP-ERROR')
+                                    }
+                                }
+                            )
+                        },
+                        convertUSTCtoVND(ustc) {
+                            return ustc * this.priceUstcToBvnd
                         }
                     }
                 })
