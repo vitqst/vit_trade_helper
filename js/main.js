@@ -40,8 +40,9 @@ $(document).ready(() => {
         "allow_symbol_change": true,
         "save_image": false,
         "hideideas": false,
+        "withdateranges": true,
+        "hide_side_toolbar": true,
         "studies": [
-            'LinearRegression@tv-basicstudies',
             'RSI@tv-basicstudies',
             'MASimple@tv-basicstudies',
         ]
@@ -83,7 +84,8 @@ $(document).ready(() => {
             </transition>
         </div>
 
-        <button style="margin-top: 5px" v-on:click="getCoinListFromApi">Refresh</button>
+<!--        <button style="margin-top: 5px" v-on:click="getCoinListFromApi">Refresh</button>-->
+<!--        <button v-on:click="handleCopy">Copy</button>-->
     </div>
 </div>`
             },
@@ -161,12 +163,6 @@ $(document).ready(() => {
         },
         {
             ...detectMob({w: 6, h: 3,}),
-            config: {...$common, "symbol": "BINANCE:ALGOUSDT"},
-            type: WIDGET_TYPE.NORMAL,
-            mobileSort: 72,
-        },
-        {
-            ...detectMob({w: 6, h: 3,}),
             config: {...$common, "symbol": "BINANCE:RVNUSDT"},
             type: WIDGET_TYPE.NORMAL,
             mobileSort: 73,
@@ -213,7 +209,10 @@ $(document).ready(() => {
         return {
             w: item.w,
             h: item.h,
-            content: `<div class="full-wh" style="background: #1e222d"><div id="widget-${k}" class="full-wh grid-stack-item_content-js"></div></div>`,
+            content: `<div class="full-wh widget-content">
+    <div id="widget-${k}" class="full-wh grid-stack-item_content-js"></div>
+    <div class="lock-js clicked"></div>
+</div>`,
             mobileSort: item.mobileSort
         }
     })
@@ -365,61 +364,70 @@ $(document).ready(() => {
                     setInterval(this.getUSTCToVND, 10000)
                 },
                 methods: {
-                    getCoinList: function () {
-                        // this is where you paste your api key
-                        const apiKey = "2131626c800f620f4d84eebe376cd298a4709ce80230600d53b8ae06309323c1";
-                        const ccStreamer = new WebSocket('wss://streamer.cryptocompare.com/v2?api_key=' + apiKey);
-                        ccStreamer.onopen = function onStreamOpen() {
-                            const subRequest = {
-                                "action": "SubAdd",
-                                "subs": ["2~Binance~RVN~USDT", "2~Binance~ALGO~USDT"]
-                            };
-                            ccStreamer.send(JSON.stringify(subRequest));
-                        }
+                    getCoinList() {
+                        //     // this is where you paste your api key
+                        //     const apiKey = "2131626c800f620f4d84eebe376cd298a4709ce80230600d53b8ae06309323c1";
+                        //     const ccStreamer = new WebSocket('wss://streamer.cryptocompare.com/v2?api_key=' + apiKey);
+                        //     ccStreamer.onopen = function onStreamOpen() {
+                        //         const subRequest = {
+                        //             "action": "SubAdd",
+                        //             "subs": ["2~Binance~RVN~USDT", "2~Binance~ALGO~USDT"]
+                        //         };
+                        //         ccStreamer.send(JSON.stringify(subRequest));
+                        //     }
+                        //
+                        //     ccStreamer.onmessage = (message) => {
+                        //         const data = JSON.parse(message.data)
+                        //         // FLAGS: 2
+                        //         // FROMSYMBOL: "ALGO"
+                        //         // LASTTRADEID: "16013507"
+                        //         // LASTUPDATE: 1614765592
+                        //         // LASTVOLUME: 14.16
+                        //         // LASTVOLUMETO: 16.214616
+                        //         // MARKET: "Binance"
+                        //         // PRICE: 1.1451
+                        //         // TOSYMBOL: "USDT"
+                        //         // TYPE: "2"
+                        //         // VOLUME24HOUR: 79662923.7
+                        //         // VOLUME24HOURTO: 88486140.375477
+                        //         // VOLUMEDAY: 31079802.16
+                        //         // VOLUMEDAYTO: 34884722.128181
+                        //         // VOLUMEHOUR: 3423258.23
+                        //         // VOLUMEHOURTO: 3927222.191424
+                        //         if (data.TYPE === "2" && data.PRICE) {
+                        //             this.priceRealTime[data.FROMSYMBOL] = data.PRICE
+                        //         }
+                        //
+                        //         if (data.TYPE === "429") {
+                        //             ccStreamer.close()
+                        //             this.getCoinListFromApi()
+                        //         }
+                        //     }
 
-                        ccStreamer.onmessage = (message) => {
-                            const data = JSON.parse(message.data)
-                            // FLAGS: 2
-                            // FROMSYMBOL: "ALGO"
-                            // LASTTRADEID: "16013507"
-                            // LASTUPDATE: 1614765592
-                            // LASTVOLUME: 14.16
-                            // LASTVOLUMETO: 16.214616
-                            // MARKET: "Binance"
-                            // PRICE: 1.1451
-                            // TOSYMBOL: "USDT"
-                            // TYPE: "2"
-                            // VOLUME24HOUR: 79662923.7
-                            // VOLUME24HOURTO: 88486140.375477
-                            // VOLUMEDAY: 31079802.16
-                            // VOLUMEDAYTO: 34884722.128181
-                            // VOLUMEHOUR: 3423258.23
-                            // VOLUMEHOURTO: 3927222.191424
-                            if (data.TYPE === "2" && data.PRICE) {
-                                this.priceRealTime[data.FROMSYMBOL] = data.PRICE
-                            }
-
-                            if (data.TYPE === "429") {
-                                ccStreamer.close()
-                                this.getCoinListFromApi()
-                                setInterval(this.getCoinListFromApi, 60 * 1000)
-                            }
-                        }
+                        this.getCoinListFromApi()
+                        setInterval(this.getCoinListFromApi, 1000)
                     },
                     getCoinListFromApi() {
-                        fetch('https://min-api.cryptocompare.com/data/pricemulti?fsyms=RVN,ALGO&tsyms=USDT').then(
+                        fetch('https://api.binance.com/api/v3/ticker/price?symbol=RVNUSDT').then(
                             response => {
                                 if (response.ok) {
                                     response.json().then(
                                         json => {
-                                            this.priceRealTime = {
-                                                RVN: json.RVN.USDT,
-                                                ALGO: json.ALGO.USDT
-                                            }
+                                            this.priceRealTime.RVN = Number(json.price)
                                         }
                                     )
-                                } else {
-                                    alert('HTTP-ERROR')
+                                }
+                            }
+                        )
+
+                        fetch('https://api.binance.com/api/v3/ticker/price?symbol=ALGOUSDT').then(
+                            response => {
+                                if (response.ok) {
+                                    response.json().then(
+                                        json => {
+                                            this.priceRealTime.ALGO = Number(json.price)
+                                        }
+                                    )
                                 }
                             }
                         )
@@ -466,12 +474,50 @@ $(document).ready(() => {
                     },
                     convertUSTCtoVND(ustc) {
                         return ustc * this.priceUstcToBvnd
+                    },
+                    copyToClipboard(text) {
+                        if (window.clipboardData && window.clipboardData.setData) {
+                            // Internet Explorer-specific code path to prevent textarea being shown while dialog is visible.
+                            return clipboardData.setData("Text", text);
+
+                        } else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
+                            var textarea = document.createElement("textarea");
+                            textarea.textContent = text;
+                            textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in Microsoft Edge.
+                            document.body.appendChild(textarea);
+                            textarea.select();
+                            try {
+                                return document.execCommand("copy");  // Security exception may be thrown by some browsers.
+                            } catch (ex) {
+                                console.warn("Copy to clipboard failed.", ex);
+                                return false;
+                            } finally {
+                                document.body.removeChild(textarea);
+                            }
+                        }
+                    },
+                    handleCopy() {
+                        let text = $('.vue-app-container')[0].innerText
+                        text = text.replace('Refresh', '')
+                        text = text.replace('Copy', '')
+                        this.copyToClipboard(text)
                     }
                 }
             })
-
         }
     })
+
+    setTimeout(() => {
+        var a = [...document.getElementsByClassName('lock-js')].map(item => {
+            item.addEventListener('click', () => {
+                if (item.className === 'lock-js clicked') {
+                    item.className = 'lock-js'
+                } else {
+                    item.className = 'lock-js clicked'
+                }
+            })
+        })
+    }, 2000)
 
     if (isMobile) {
         setTimeout(() => {
