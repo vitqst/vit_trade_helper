@@ -1,7 +1,7 @@
 $(document).ready(() => {
     const isPortraitMode = window.innerWidth <= 1081
     const isMobile = window.innerWidth <= 768
-    const theme = 'light' // light | dark
+    const theme = 'dark' // light | dark
 
     function detectMob(defaultWH, fallbackWH) {
         if (isMobile) {
