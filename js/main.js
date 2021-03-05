@@ -1,6 +1,7 @@
 $(document).ready(() => {
     const isPortraitMode = window.innerWidth <= 1081
     const isMobile = window.innerWidth <= 768
+    const theme = 'light' // light | dark
 
     function detectMob(defaultWH, fallbackWH) {
         if (isMobile) {
@@ -31,7 +32,7 @@ $(document).ready(() => {
         "symbol": "BINANCE:RVNUSDT",
         "interval": "D",
         "timezone": "Etc/UTC",
-        "theme": "Dark",
+        "theme": theme,
         "style": "1",
         "locale": "en",
         "toolbar_bg": "rgba(0, 0, 0, 1)",
@@ -41,11 +42,12 @@ $(document).ready(() => {
         "save_image": false,
         "hideideas": false,
         "withdateranges": true,
-        "hide_side_toolbar": true,
+        "hide_side_toolbar": isMobile,
         "studies": [
             'RSI@tv-basicstudies',
             'MASimple@tv-basicstudies',
-        ]
+        ],
+        "container_id": "tradingview_66eb0"
     }
 
     const $commonSingleTicker = {
@@ -56,7 +58,7 @@ $(document).ready(() => {
         "symbol": "BINANCE:ALGOUSDT",
         "showIntervalTabs": true,
         "locale": "en",
-        "colorTheme": "dark"
+        "colorTheme": theme
     }
 
     const WIDGET_TYPE = {
@@ -458,12 +460,12 @@ $(document).ready(() => {
                         }
                     },
                     getUSTCToVND() {
-                        fetch('https://min-api.cryptocompare.com/data/price?fsym=USDT&tsyms=BVND').then(
+                        fetch('https://api.binance.com/api/v3/ticker/price?symbol=USDTBVND').then(
                             response => {
                                 if (response.ok) {
                                     response.json().then(
                                         json => {
-                                            this.priceUstcToBvnd = json.USDT.BVND
+                                            this.priceUstcToBvnd = Number(json.price)
                                         }
                                     )
                                 } else {
