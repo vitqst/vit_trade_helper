@@ -463,7 +463,7 @@ $(document).ready(() => {
                     },
                     getWallet() {
                         MAINSTREAM_COIN.map(item => {
-                            fetch(`http://207.148.65.91:1337/wallets`).then(
+                            fetch(`https://crypto-be.ioabc.xyz/wallets`).then(
                                 response => {
                                     if (response.ok) {
                                         response.json().then(
