@@ -97,7 +97,7 @@ $(document).ready(() => {
             mobileSort: 100,
         },
 
-        // GENERATE SINGLE TICKET
+        ////////////// GENERATE SINGLE TICKET ////////////////////////////
             ...[...MAINSTREAM_COIN, ...SUPPORT_COIN].map(item => {
             return {
                     ...detectMob({w: 3, h: 1}, {w: 6, h: 2}),
@@ -109,9 +109,9 @@ $(document).ready(() => {
                     mobileSort: 90,
             }
         }),
-        // END GENERATE SINGLE TICKET
+        ////////////// END GENERATE SINGLE TICKET ////////////////////////
 
-        // GENERATE CHART
+        ///////////// GENERATE CHART ////////////////////////////
         ...MAINSTREAM_COIN.map(item => {
             return {
                 ...detectMob({w: 6, h: 3,}),
@@ -136,7 +136,7 @@ $(document).ready(() => {
                 mobileSort: 60,
             }
         }),
-        // END GENERATE CHART
+        //////////////// END GENERATE CHART ///////////////////////////////
     ]
 
     const grid = GridStack.init({
@@ -194,14 +194,10 @@ $(document).ready(() => {
             new Vue({
                 el: `#${widgetId}`,
                 data: {
-                    soDienSd: 'hix',
-                    priceRealTime: {
-                        RVN: 0,
-                        ALGO: 0,
-                        FTM: 0
-                    },
+                    coinsFollowed: [],
                     wallet: [],
                     priceUstcToBvnd: 24000,
+                    priceRealTime: {}
                 },
                 computed: {
                     total() {
@@ -264,10 +260,33 @@ $(document).ready(() => {
                         return Object.values(wlBreakDown)
                     }
                 },
+
+                watch: {
+                    coinsFollowed(newVal) {
+                        newVal.map(item => {
+                            fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${item}USDT`).then(
+                                response => {
+                                    if (response.ok) {
+                                        response.json().then(
+                                            json => {
+                                                this.priceRealTime[item] = Number(json.price)
+                                            }
+                                        )
+                                    }
+                                }
+                            )
+                        })
+                    }
+                },
+
                 created() {
                     this.getWallet()
-                    setInterval(this.getWallet, 10000)
-                    this.getCoinList()
+                    setInterval(this.getWallet, 3000)
+
+                    // this.getCoinListFromApi()
+                    // setInterval(this.getCoinListFromApi, 1000)
+
+                    this.getUSTCToVND()
                     setInterval(this.getUSTCToVND, 10000)
                 },
 
@@ -311,12 +330,9 @@ $(document).ready(() => {
                         //             this.getCoinListFromApi()
                         //         }
                         //     }
-
-                        this.getCoinListFromApi()
-                        setInterval(this.getCoinListFromApi, 1000)
                     },
                     getCoinListFromApi() {
-                        MAINSTREAM_COIN.map(item => {
+                        this.coinsFollowed.map(item => {
                             fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${item}USDT`).then(
                                 response => {
                                     if (response.ok) {
@@ -348,12 +364,6 @@ $(document).ready(() => {
                         }
 
                         return df
-                    },
-                    refreshPrice() {
-                        this.priceRealTime = {
-                            RVN: this.priceRealTime.RVN + 0.1,
-                            ALGO: this.priceRealTime.ALGO + 0.2,
-                        }
                     },
                     getUSTCToVND() {
                         fetch('https://api.binance.com/api/v3/ticker/price?symbol=USDTBVND').then(
@@ -407,6 +417,7 @@ $(document).ready(() => {
                                     response.json().then(
                                         json => {
                                             this.wallet = json
+                                            this.coinsFollowed = [... new Set(json.map(item => item.name))]
                                         }
                                     )
                                 }
