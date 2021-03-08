@@ -125,7 +125,7 @@ a:hover {
 .grid-stack-item .widget-content .lock-js {
     width: 0;
     height: 0;
-    border-top: 50px solid rgba(255, 255, 255, 0.2);
+    border-top: 50px solid rgba(42, 125, 213, 0.3);
     border-left: 50px solid transparent;
 
     position: absolute;

@@ -2,6 +2,8 @@ $(document).ready(() => {
     const isPortraitMode = window.innerWidth <= 1081
     const isMobile = window.innerWidth <= 768
     const theme = 'dark' // light | dark
+    const MAINSTREAM_COIN = ['FTM', 'RVN', 'ALGO']
+    const SUPPORT_COIN = ['BTC', 'BNB', 'ETH']
 
     function detectMob(defaultWH, fallbackWH) {
         if (isMobile) {
@@ -71,7 +73,7 @@ $(document).ready(() => {
     const widgets = [
         // Small
         {
-            ...detectMob({w: 3, h: 1}, {w: 12, h: 2}),
+            ...detectMob({w: 3, h: 2}, {w: 12, h: 2}),
             config: {
                 content: `<div id="vue-app">
     <div class="vue-app-container">
@@ -94,111 +96,108 @@ $(document).ready(() => {
             type: WIDGET_TYPE.Custom,
             mobileSort: 100,
         },
-        {
-            ...detectMob({w: 3, h: 3}, {w: 6, h: 5}),
-            config: {
-                ...$commonSingleTicker,
-                "symbol": "BINANCE:ALGOUSDT",
-            },
-            type: WIDGET_TYPE.TECHNICAL_ANALYSIS,
-            mobileSort: 80,
-        },
-        {
-            ...detectMob({w: 3, h: 3,}, {w: 6, h: 5}),
-            config: {
-                ...$commonSingleTicker,
-                "symbol": "BINANCE:RVNUSDT",
-            },
-            type: WIDGET_TYPE.TECHNICAL_ANALYSIS,
-            mobileSort: 80,
-        },
-        {
-            ...detectMob({w: 3, h: 1}, {w: 6, h: 2}),
-            config: {
-                ...$commonSingleTicker,
-                "symbol": "BINANCE:BTCUSDT",
-            },
-            type: WIDGET_TYPE.SINGLE_TICKER,
-            mobileSort: 90,
-        },
-        {
-            ...detectMob({w: 3, h: 1}, {w: 6, h: 2}),
-            config: {
-                ...$commonSingleTicker,
-                "symbol": "BINANCE:ALGOUSDT",
-            },
-            type: WIDGET_TYPE.SINGLE_TICKER,
-            mobileSort: 95,
-        },
-        {
-            ...detectMob({w: 3, h: 1}, {w: 6, h: 2}),
-            config: {
-                ...$commonSingleTicker,
-                "symbol": "BINANCE:BNBUSDT",
-            },
-            type: WIDGET_TYPE.SINGLE_TICKER,
-            mobileSort: 90,
-        },
-        {
-            ...detectMob({w: 3, h: 1}, {w: 6, h: 2}),
-            config: {
-                ...$commonSingleTicker,
-                "symbol": "BINANCE:RVNUSDT",
-            },
-            type: WIDGET_TYPE.SINGLE_TICKER,
-            mobileSort: 95,
-        },
-        {
-            ...detectMob({w: 6, h: 3,}),
-            config: {...$common, "symbol": "BINANCE:ALGOUSDT"},
-            type: WIDGET_TYPE.NORMAL,
-            mobileSort: 70,
-        },
-        {
-            ...detectMob({w: 3, h: 1}, {w: 12, h: 2}),
-            config: {
-                ...$commonSingleTicker,
-                "symbol": "BINANCE:ETHUSDT",
-            },
-            type: WIDGET_TYPE.SINGLE_TICKER,
-            mobileSort: 90,
-        },
-        {
-            ...detectMob({w: 6, h: 3,}),
-            config: {...$common, "symbol": "BINANCE:RVNUSDT"},
-            type: WIDGET_TYPE.NORMAL,
-            mobileSort: 73,
-        },
-        {
-            ...detectMob({w: 6, h: 3,}),
-            config: {...$common, "symbol": "BINANCE:RVNUSDT", "interval": "60"},
-            type: WIDGET_TYPE.NORMAL,
-            mobileSort: 73,
-        },
-        {
-            ...detectMob({w: 6, h: 3,}),
-            config: {...$common, "symbol": "BINANCE:ETHUSDT"},
-            type: WIDGET_TYPE.NORMAL,
-            mobileSort: 70,
-        },
-        {
-            ...detectMob({w: 6, h: 3,}),
-            config: {...$common, "symbol": "BINANCE:ALGOUSDT", "interval": "60"},
-            type: WIDGET_TYPE.NORMAL,
-            mobileSort: 72,
-        },
-        {
-            ...detectMob({w: 6, h: 3,}),
-            config: {...$common, "symbol": "BINANCE:BNBUSDT"},
-            type: WIDGET_TYPE.NORMAL,
-            mobileSort: 70,
-        },
-        {
-            ...detectMob({w: 6, h: 3,}),
-            config: {...$common, "symbol": "BINANCE:BTCUSDT"},
-            type: WIDGET_TYPE.NORMAL,
-            mobileSort: 70,
-        },
+            ...[...MAINSTREAM_COIN, ...SUPPORT_COIN].map(item => {
+            return {
+                    ...detectMob({w: 3, h: 1}, {w: 6, h: 2}),
+                    config: {
+                        ...$commonSingleTicker,
+                        "symbol": `BINANCE:${item}USDT`,
+                    },
+                    type: WIDGET_TYPE.SINGLE_TICKER,
+                    mobileSort: 90,
+            }
+        }),
+        // {
+        //     ...detectMob({w: 3, h: 3}, {w: 6, h: 5}),
+        //     config: {
+        //         ...$commonSingleTicker,
+        //         "symbol": "BINANCE:ALGOUSDT",
+        //     },
+        //     type: WIDGET_TYPE.TECHNICAL_ANALYSIS,
+        //     mobileSort: 80,
+        // },
+        // {
+        //     ...detectMob({w: 3, h: 3,}, {w: 6, h: 5}),
+        //     config: {
+        //         ...$commonSingleTicker,
+        //         "symbol": "BINANCE:RVNUSDT",
+        //     },
+        //     type: WIDGET_TYPE.TECHNICAL_ANALYSIS,
+        //     mobileSort: 80,
+        // },
+        // {
+        //     ...detectMob({w: 3, h: 1}, {w: 6, h: 2}),
+        //     config: {
+        //         ...$commonSingleTicker,
+        //         "symbol": "BINANCE:BTCUSDT",
+        //     },
+        //     type: WIDGET_TYPE.SINGLE_TICKER,
+        //     mobileSort: 90,
+        // },
+        // {
+        //     ...detectMob({w: 3, h: 1}, {w: 6, h: 2}),
+        //     config: {
+        //         ...$commonSingleTicker,
+        //         "symbol": "BINANCE:ALGOUSDT",
+        //     },
+        //     type: WIDGET_TYPE.SINGLE_TICKER,
+        //     mobileSort: 95,
+        // },
+        // {
+        //     ...detectMob({w: 3, h: 1}, {w: 6, h: 2}),
+        //     config: {
+        //         ...$commonSingleTicker,
+        //         "symbol": "BINANCE:BNBUSDT",
+        //     },
+        //     type: WIDGET_TYPE.SINGLE_TICKER,
+        //     mobileSort: 90,
+        // },
+        // {
+        //     ...detectMob({w: 3, h: 1}, {w: 6, h: 2}),
+        //     config: {
+        //         ...$commonSingleTicker,
+        //         "symbol": "BINANCE:RVNUSDT",
+        //     },
+        //     type: WIDGET_TYPE.SINGLE_TICKER,
+        //     mobileSort: 95,
+        // },
+        // {
+        //     ...detectMob({w: 3, h: 1}, {w: 12, h: 2}),
+        //     config: {
+        //         ...$commonSingleTicker,
+        //         "symbol": "BINANCE:ETHUSDT",
+        //     },
+        //     type: WIDGET_TYPE.SINGLE_TICKER,
+        //     mobileSort: 90,
+        // },
+
+
+        // GENERATE CHART
+        ...MAINSTREAM_COIN.map(item => {
+            return {
+                ...detectMob({w: 6, h: 3,}),
+                config: {...$common, symbol: `BINANCE:${item}USDT`},
+                type: WIDGET_TYPE.NORMAL,
+                mobileSort: 73,
+            }
+        }),
+        ...MAINSTREAM_COIN.map(item => {
+            return {
+                ...detectMob({w: 6, h: 3,}),
+                config: {...$common, symbol: `BINANCE:${item}USDT`, interval: `60`},
+                type: WIDGET_TYPE.NORMAL,
+                mobileSort: 70,
+            }
+        }),
+        ...SUPPORT_COIN.map(item => {
+            return {
+                ...detectMob({w: 6, h: 3,}),
+                config: {...$common, "symbol": `BINANCE:${item}USDT`},
+                type: WIDGET_TYPE.NORMAL,
+                mobileSort: 60,
+            }
+        }),
+        // END GENERATE CHART
     ]
 
     const grid = GridStack.init({
@@ -257,45 +256,28 @@ $(document).ready(() => {
                 el: `#${widgetId}`,
                 data: {
                     soDienSd: 'hix',
-                    total: 0,
-                    walletGroupByCoin: [], // [{name: "", volume: 123,123}]
                     priceRealTime: {
                         RVN: 0,
-                        ALGO: 0
+                        ALGO: 0,
+                        FTM: 0
                     },
-                    wallet: [
-                        {
-                            name: 'RVN',
-                            volume: 300,
-                            price: 0.16326
-                        },
-                        {
-                            name: 'RVN',
-                            volume: 2428,
-                            price: 0.17216
-                        },
-                        {
-                            name: 'RVN',
-                            volume: 1273,
-                            price: 0.16453
-                        },
-                        {
-                            name: 'ALGO',
-                            volume: 50,
-                            price: 1.0955
-                        },
-                        {
-                            name: 'ALGO',
-                            volume: 97.72,
-                            price: 1.0577
-                        },
-                    ],
+                    wallet: [],
                     priceUstcToBvnd: 24000,
                 },
                 computed: {
+                    total() {
+                        let total = 0
+
+                        for (const item of this.wallet) {
+                            total = item.price * item.volume + total
+                        }
+
+                        return total
+                    },
                     totalNew() {
                         let tempTotalNew = 0
-                        for (const item of this.walletGroupByCoin) {
+
+                        for (const item of this.wallet) {
                             tempTotalNew = item.volume * this.priceRealTime[item.name] + tempTotalNew
                         }
 
@@ -303,6 +285,7 @@ $(document).ready(() => {
                     },
                     profit() {
                         const s = this.totalNew - this.total
+
                         return {
                             money: this.roundNum(s),
                             percent: this.roundNum(s / this.total * 100),
@@ -342,29 +325,12 @@ $(document).ready(() => {
                         return Object.values(wlBreakDown)
                     }
                 },
-                mounted() {
-                    for (const item of this.wallet) {
-                        this.total = item.price * item.volume + this.total
-                    }
-
-                    for (const item of this.wallet) {
-                        const index = this.walletGroupByCoin.findIndex(itemWallet => itemWallet.name === item.name)
-                        if (index !== -1) {
-                            this.walletGroupByCoin[index] = {
-                                name: this.walletGroupByCoin[index].name,
-                                volume: this.walletGroupByCoin[index].volume + item.volume
-                            }
-                        } else {
-                            this.walletGroupByCoin.push({
-                                name: item.name,
-                                volume: item.volume
-                            })
-                        }
-                    }
-
+                created() {
+                    this.getWallet()
                     this.getCoinList()
                     setInterval(this.getUSTCToVND, 10000)
                 },
+
                 methods: {
                     getCoinList() {
                         //     // this is where you paste your api key
@@ -410,29 +376,20 @@ $(document).ready(() => {
                         setInterval(this.getCoinListFromApi, 1000)
                     },
                     getCoinListFromApi() {
-                        fetch('https://api.binance.com/api/v3/ticker/price?symbol=RVNUSDT').then(
-                            response => {
-                                if (response.ok) {
-                                    response.json().then(
-                                        json => {
-                                            this.priceRealTime.RVN = Number(json.price)
-                                        }
-                                    )
-                                }
-                            }
-                        )
 
-                        fetch('https://api.binance.com/api/v3/ticker/price?symbol=ALGOUSDT').then(
-                            response => {
-                                if (response.ok) {
-                                    response.json().then(
-                                        json => {
-                                            this.priceRealTime.ALGO = Number(json.price)
-                                        }
-                                    )
+                        MAINSTREAM_COIN.map(item => {
+                            fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${item}USDT`).then(
+                                response => {
+                                    if (response.ok) {
+                                        response.json().then(
+                                            json => {
+                                                this.priceRealTime[item] = Number(json.price)
+                                            }
+                                        )
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        })
                     },
                     roundNum: (number, digit = 2) => {
                         let round = 1
@@ -503,7 +460,22 @@ $(document).ready(() => {
                         text = text.replace('Refresh', '')
                         text = text.replace('Copy', '')
                         this.copyToClipboard(text)
-                    }
+                    },
+                    getWallet() {
+                        MAINSTREAM_COIN.map(item => {
+                            fetch(`http://207.148.65.91:1337/wallets`).then(
+                                response => {
+                                    if (response.ok) {
+                                        response.json().then(
+                                            json => {
+                                                this.wallet = json
+                                            }
+                                        )
+                                    }
+                                }
+                            )
+                        })
+                    },
                 }
             })
         }
