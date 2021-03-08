@@ -96,6 +96,8 @@ $(document).ready(() => {
             type: WIDGET_TYPE.Custom,
             mobileSort: 100,
         },
+
+        // GENERATE SINGLE TICKET
             ...[...MAINSTREAM_COIN, ...SUPPORT_COIN].map(item => {
             return {
                     ...detectMob({w: 3, h: 1}, {w: 6, h: 2}),
@@ -107,70 +109,7 @@ $(document).ready(() => {
                     mobileSort: 90,
             }
         }),
-        // {
-        //     ...detectMob({w: 3, h: 3}, {w: 6, h: 5}),
-        //     config: {
-        //         ...$commonSingleTicker,
-        //         "symbol": "BINANCE:ALGOUSDT",
-        //     },
-        //     type: WIDGET_TYPE.TECHNICAL_ANALYSIS,
-        //     mobileSort: 80,
-        // },
-        // {
-        //     ...detectMob({w: 3, h: 3,}, {w: 6, h: 5}),
-        //     config: {
-        //         ...$commonSingleTicker,
-        //         "symbol": "BINANCE:RVNUSDT",
-        //     },
-        //     type: WIDGET_TYPE.TECHNICAL_ANALYSIS,
-        //     mobileSort: 80,
-        // },
-        // {
-        //     ...detectMob({w: 3, h: 1}, {w: 6, h: 2}),
-        //     config: {
-        //         ...$commonSingleTicker,
-        //         "symbol": "BINANCE:BTCUSDT",
-        //     },
-        //     type: WIDGET_TYPE.SINGLE_TICKER,
-        //     mobileSort: 90,
-        // },
-        // {
-        //     ...detectMob({w: 3, h: 1}, {w: 6, h: 2}),
-        //     config: {
-        //         ...$commonSingleTicker,
-        //         "symbol": "BINANCE:ALGOUSDT",
-        //     },
-        //     type: WIDGET_TYPE.SINGLE_TICKER,
-        //     mobileSort: 95,
-        // },
-        // {
-        //     ...detectMob({w: 3, h: 1}, {w: 6, h: 2}),
-        //     config: {
-        //         ...$commonSingleTicker,
-        //         "symbol": "BINANCE:BNBUSDT",
-        //     },
-        //     type: WIDGET_TYPE.SINGLE_TICKER,
-        //     mobileSort: 90,
-        // },
-        // {
-        //     ...detectMob({w: 3, h: 1}, {w: 6, h: 2}),
-        //     config: {
-        //         ...$commonSingleTicker,
-        //         "symbol": "BINANCE:RVNUSDT",
-        //     },
-        //     type: WIDGET_TYPE.SINGLE_TICKER,
-        //     mobileSort: 95,
-        // },
-        // {
-        //     ...detectMob({w: 3, h: 1}, {w: 12, h: 2}),
-        //     config: {
-        //         ...$commonSingleTicker,
-        //         "symbol": "BINANCE:ETHUSDT",
-        //     },
-        //     type: WIDGET_TYPE.SINGLE_TICKER,
-        //     mobileSort: 90,
-        // },
-
+        // END GENERATE SINGLE TICKET
 
         // GENERATE CHART
         ...MAINSTREAM_COIN.map(item => {
@@ -327,6 +266,7 @@ $(document).ready(() => {
                 },
                 created() {
                     this.getWallet()
+                    setInterval(this.getWallet, 10000)
                     this.getCoinList()
                     setInterval(this.getUSTCToVND, 10000)
                 },
@@ -376,7 +316,6 @@ $(document).ready(() => {
                         setInterval(this.getCoinListFromApi, 1000)
                     },
                     getCoinListFromApi() {
-
                         MAINSTREAM_COIN.map(item => {
                             fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${item}USDT`).then(
                                 response => {
@@ -462,19 +401,17 @@ $(document).ready(() => {
                         this.copyToClipboard(text)
                     },
                     getWallet() {
-                        MAINSTREAM_COIN.map(item => {
-                            fetch(`https://crypto-be.ioabc.xyz/wallets`).then(
-                                response => {
-                                    if (response.ok) {
-                                        response.json().then(
-                                            json => {
-                                                this.wallet = json
-                                            }
-                                        )
-                                    }
+                        fetch(`https://crypto-be.ioabc.xyz/wallets`).then(
+                            response => {
+                                if (response.ok) {
+                                    response.json().then(
+                                        json => {
+                                            this.wallet = json
+                                        }
+                                    )
                                 }
-                            )
-                        })
+                            }
+                        )
                     },
                 }
             })
