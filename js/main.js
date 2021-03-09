@@ -455,8 +455,9 @@ $(document).ready(() => {
                 }
             })
 
-            document.getElementsByClassName('custom-item')[0].style.height = '250px'
-            document.getElementsByClassName('custom-item')[0].style.minHeight = '250px'
+            const vueAppHeight = Number($('.vue-app-container')[0].offsetHeight)
+            document.getElementsByClassName('custom-item')[0].style.height = `${vueAppHeight + 20}px`
+            document.getElementsByClassName('custom-item')[0].style.minHeight = `${vueAppHeight + 20}px`
         }, 1000)
     }
 })
