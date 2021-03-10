@@ -169,7 +169,7 @@ $(document).ready(() => {
 
             //////////////                            ////////////////////////
             {
-                ...detectMob({w: 6, h: 6}, { w: 12, h: 7 }, {w: 12, h: 3}),
+                ...detectMob({w: 6, h: 6}, { w: 12, h: 7 }, {w: 12, h: 2}),
                 config: {
                     ...COMMON_MARKET_DATA_CONFIG,
                 },
