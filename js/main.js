@@ -136,7 +136,7 @@ $(document).ready(() => {
 
             //////////////                            ////////////////////////
             {
-                ...detectMob({w: 6, h: 6}, null, {w: 12, h: 4}),
+                ...detectMob({w: 6, h: 6}, null, {w: 12, h: 2}),
                 config: {
                     ...COMMON_MARKET_DATA_CONFIG,
                 },
@@ -505,14 +505,20 @@ $(document).ready(() => {
                 })
 
                 const vueAppHeight = Number($('.vue-app-container')[0].offsetHeight)
-                document.getElementsByClassName('custom-item')[0].style.height = `${vueAppHeight + 20}px`
-                document.getElementsByClassName('custom-item')[0].style.minHeight = `${vueAppHeight + 20}px`
+                document.getElementsByClassName('custom-item')[0].style.height = `400px`
+                document.getElementsByClassName('custom-item')[0].style.minHeight = `400pxpx`
             }, 3000)
         }
 
         ///////////////////////////////       End support UI JS                /////////////////////////////////////////
 
-        $('#add-widget-js').on('click', () => {
+
+        [... new Set([...supportCoins, ...mainStreamCoins])].map((item => {
+            debugger
+            document.getElementById('add-widget-js').appendChild($(`<option value="${item}">${item}</option>`)[0])
+        }))
+
+        $('#add-widget-js').on('change', (e) => {
             const date = new Date()
             const widgetId = `widget-${date.getMilliseconds()}`
 
@@ -528,7 +534,7 @@ $(document).ready(() => {
             if (document.getElementById(widgetId)) {
                 document.getElementById(widgetId).value = new TradingView.widget({
                     ...COMMON_NORMAL,
-                    symbol: `BINANCE:RVNUSDT`,
+                    symbol: `BINANCE:${e.target.value}USDT`,
                     container_id: widgetId
                 })
             }
