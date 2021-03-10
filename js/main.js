@@ -4,8 +4,12 @@ $(document).ready(() => {
         const isMobile = window.innerWidth <= 768
         const THEME = 'dark' // light | dark
 
-        function detectMob(defaultWH, fallbackWH) {
+        function detectMob(defaultWH, fallbackWH, fallBackMobile) {
             if (isMobile) {
+                if (fallBackMobile) {
+                    return fallBackMobile
+                }
+
                 return {
                     w: 12,
                     h: 1,
@@ -65,7 +69,7 @@ $(document).ready(() => {
             "height": "100%",
             "colorTheme": "dark",
             "dateRange": "1D",
-            "showChart": true,
+            "showChart": false,
             "locale": "en",
             "largeChartUrl": "",
             "isTransparent": false,
@@ -132,7 +136,7 @@ $(document).ready(() => {
 
             //////////////                            ////////////////////////
             {
-                ...detectMob({w: 6, h: 3}),
+                ...detectMob({w: 6, h: 6}, null, {w: 12, h: 4}),
                 config: {
                     ...COMMON_MARKET_DATA_CONFIG,
                 },
@@ -503,7 +507,7 @@ $(document).ready(() => {
                 const vueAppHeight = Number($('.vue-app-container')[0].offsetHeight)
                 document.getElementsByClassName('custom-item')[0].style.height = `${vueAppHeight + 20}px`
                 document.getElementsByClassName('custom-item')[0].style.minHeight = `${vueAppHeight + 20}px`
-            }, 1000)
+            }, 3000)
         }
 
         ///////////////////////////////       End support UI JS                /////////////////////////////////////////
