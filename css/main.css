@@ -110,6 +110,11 @@ a:hover {
     font-weight: normal;
 }
 
+.vue-app-container .title.support {
+    color: #fff;
+    font-weight: normal;
+}
+
 .grid-stack-item .grid-stack-item-content::-webkit-scrollbar {
     display: none;
 }
@@ -177,8 +182,6 @@ a:hover {
         z-index: 999999;
         background: rgba(255, 255, 255, 0.005);
     }
-
-
 }
 
 .slide-fade-enter-active {
