@@ -1,3 +1,18 @@
+@import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css);
+:root {
+    --bg: #060c17;
+    --item-bg: #0c1427;
+    --main-font-color: white;
+    --border: #262f43;
+    --th-bg: black;
+    --th-font: #7886a1;
+    --btc: #ff8133;
+    --eth: #106fb7;
+    --buy: #10b759;
+    --sell: #ff3366;
+    --main-font: "Overpass", sans-serif;
+}
+
 body, html {
     padding: 0;
     margin: 0;
@@ -78,6 +93,8 @@ a:hover {
 .vue-app-container {
     padding: 10px;
     position: relative;
+    background: #1e222d;
+    border-radius: 10px;
 }
 
 .vue-app-container button {
@@ -107,7 +124,7 @@ a:hover {
 
 .vue-app-container .title.up {
     color: green;
-    font-weight: normal;
+    font-weight: bold;
 }
 
 .vue-app-container .title.support {
@@ -242,4 +259,72 @@ a:hover {
 .slide-fade-enter, .slide-fade-leave-to
     /* .slide-fade-leave-active for <2.1.8 */ {
     color: #fff !important;
+}
+
+
+/*table*/
+.table-body {
+    position: relative;
+    top: 0;
+    width: 100%;
+    overflow: auto;
+    border-top: 1px solid var(--border);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    font-family: var(--main-font);
+}
+
+.table thead {
+    color: var(--th-font);
+}
+
+.table tbody {
+    color: var(--main-font-color);
+}
+
+.table thead th {
+    position: sticky;
+    top: 0;
+    background-color: var(--th-bg);
+}
+
+.table thead th,
+.table tbody td {
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.8rem;
+    padding: 5px;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: var(--bg);
+}
+
+.table tbody tr.support {
+    background: #381a42;
+}
+
+.instrument-ticker {
+    display: none;
+}
+
+.table tbody td span.vnd {
+    font-size: 0.7rem; color: #fff;
+}
+
+@media (max-width: 768px) {
+    .table tbody td {
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.69rem;
+        padding: 5px;
+    }
+
+    .table tbody td span.vnd {
+        font-size: 0.55rem;
+    }
 }

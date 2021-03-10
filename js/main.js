@@ -23,7 +23,7 @@ $(document).ready(() => {
 
                 return {
                     w: 12,
-                    h: 3
+                    h: 5
                 }
             }
 
@@ -110,23 +110,56 @@ $(document).ready(() => {
         const widgets = [
             // Small
             {
-                ...detectMob({w: 12, h: 2}, {w: 12, h: 2}),
+                ...detectMob({w: 12, h: 2}, {w: 12, h: 6}),
                 config: {
+                    // language=HTML
                     content: `<div id="vue-app">
     <div class="vue-app-container">
-        <div class="total"><span :class="className()">Total invested:</span> <span class="title-total">{{ roundNum(total) }} USDT | {{ roundNum(convertUSTCtoVND(total)) }} VND</span></div>
-        <div class="total-realtime"><span :class="className()">Equity value :</span> <span class="title-total">{{ roundNum(totalNew) }} USDT | {{ roundNum(convertUSTCtoVND(totalNew)) }} VND</span></div>
-        <div class="total-realtime"><span :class="className()">Gap:</span> <transition name="slide-fade" mode="out-in"><span :key="profit.percent" :class="className(profit.money)">{{ profit.money }} USDT | {{ roundNum(convertUSTCtoVND(profit.money)) }} VND / {{ profit.percent }} %</span></div></trainsition>
-        <div class="title-total" style="padding: 2px 0 2px 0; font-weight: bold; font-size: 1.1rem">Breakdown profit & loss</div>
-        <div v-for="(item, index) in profitBreakDown" :key="index">
-            <span :class="item.order > 0 ? 'title' : 'title support'">{{ item.name }}:</span>
-            <transition name="slide-fade" mode="out-in">
-                <span :class="className(item.gap)" :key="item.percent" style="font-size: 0.8rem">{{ roundNum(item.gap) }} USDT | {{ roundNum(convertUSTCtoVND(item.gap)) }} VND / {{ roundNum(item.percent) }} % ({{ item.volume }} / {{ roundNum(item.realTimeMoney) }} USDT)</span>
-            </transition>
+        <div class="total"><span :class="className()">Total invested:</span> <span class="title-total">{{ roundNum(total) }} USDT | {{ roundNum(convertUSTCtoVND(total), 0) }} VND</span>
+        </div>
+        <div class="total-realtime"><span :class="className()">Equity value :</span> <span class="title-total">{{ roundNum(totalNew) }} USDT | {{ roundNum(convertUSTCtoVND(totalNew), 0) }} VND</span>
+        </div>
+        <div class="total-realtime"><span :class="className()">Gap:</span>
+            <transition name="slide-fade" mode="out-in"><span :key="profit.percent" :class="className(profit.money)">{{ profit.money }} USDT | {{ roundNum(convertUSTCtoVND(profit.money)) }} VND / {{ profit.percent }} %</span>
+        </div>
+        </trainsition>
+        <div class="title-total" style="padding: 2px 0 2px 0; font-weight: bold; font-size: 1.1rem">Breakdown profit &
+            loss
+        </div>
+<!--        <div v-for="(item, index) in profitBreakDown" :key="index">-->
+<!--            <span :class="item.order > 0 ? 'title' : 'title support'">{{ item.name }}:</span>-->
+<!--            <transition name="slide-fade" mode="out-in">-->
+<!--                <span :class="className(item.gap)" :key="item.percent" style="font-size: 0.8rem">{{ roundNum(item.gap) }} USDT | {{ roundNum(convertUSTCtoVND(item.gap)) }} VND / {{ roundNum(item.percent) }} % ({{ item.volume }} / {{ roundNum(item.realTimeMoney) }} USDT)</span>-->
+<!--            </transition>-->
+<!--        </div>-->
+
+        <div class="table-box">
+            <div class="table-body">
+                <table id="main-table" class="table">
+                    <thead>
+                    <tr>
+                        <th>NAME</th>
+                        <th>Profit / Loss</th>
+                        <th>Percent</th>
+                        <th v-if="!isMobile">Volume</th>
+                        <th>Equity value</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in profitBreakDown" :key="index" :class="item.order > 0 ? 'normal' : 'support'">
+                            <td :class="className(item.gap)">{{ item.name }}</td>
+                            <td :class="className(item.gap)">{{ roundNum(item.gap) }}<br>  <span class="vnd">{{ roundNum(convertUSTCtoVND(item.gap), 0) }}</span></td>
+                            <td :class="className(item.gap)">{{ roundNum(item.percent) }} %</span></td>
+                            <td :class="className(item.gap)" v-if="!isMobile">{{ roundNum(item.volume) }}</td>
+                            <td :class="className(item.gap)">{{ roundNum(item.realTimeMoney) }}<br>  <span class="vnd">{{ roundNum(convertUSTCtoVND(item.realTimeMoney), 0) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-<!--        <button style="margin-top: 5px" v-on:click="getCoinListFromApi">Refresh</button>-->
-<!--        <button v-on:click="handleCopy">Copy</button>-->
+        <!--        <button style="margin-top: 5px" v-on:click="getCoinListFromApi">Refresh</button>-->
+        <!--        <button v-on:click="handleCopy">Copy</button>-->
     </div>
 </div>`
                 },
@@ -136,7 +169,7 @@ $(document).ready(() => {
 
             //////////////                            ////////////////////////
             {
-                ...detectMob({w: 6, h: 6}, null, {w: 12, h: 2}),
+                ...detectMob({w: 6, h: 6}, { w: 12, h: 7 }, {w: 12, h: 3}),
                 config: {
                     ...COMMON_MARKET_DATA_CONFIG,
                 },
@@ -230,7 +263,8 @@ $(document).ready(() => {
                         coinsFollowed: [],
                         wallet: [],
                         priceUstcToBvnd: 24000,
-                        priceRealTime: {}
+                        priceRealTime: {},
+                        isMobile
                     },
                     computed: {
                         total() {
@@ -478,15 +512,17 @@ $(document).ready(() => {
 
         ////////////////////////////////      Start support UI JS              /////////////////////////////////////////
 
+        const onClickWidgetItemHandle = (e) => {
+            if (e.target.className === 'lock-js clicked') {
+                e.target.className = 'lock-js'
+            } else {
+                e.target.className = 'lock-js clicked'
+            }
+        }
+
         setTimeout(() => {
             var a = [...document.getElementsByClassName('lock-js')].map(item => {
-                item.addEventListener('click', () => {
-                    if (item.className === 'lock-js clicked') {
-                        item.className = 'lock-js'
-                    } else {
-                        item.className = 'lock-js clicked'
-                    }
-                })
+                item.addEventListener('click', onClickWidgetItemHandle)
             })
         }, 2000)
 
@@ -514,7 +550,6 @@ $(document).ready(() => {
 
 
         [... new Set([...supportCoins, ...mainStreamCoins])].map((item => {
-            debugger
             document.getElementById('add-widget-js').appendChild($(`<option value="${item}">${item}</option>`)[0])
         }))
 
@@ -537,6 +572,10 @@ $(document).ready(() => {
                     symbol: `BINANCE:${e.target.value}USDT`,
                     container_id: widgetId
                 })
+
+                if (document.getElementById(widgetId).parentElement.querySelector('.lock-js')) {
+                    document.getElementById(widgetId).parentElement.querySelector('.lock-js').addEventListener('click', onClickWidgetItemHandle)
+                }
             }
         })
 
