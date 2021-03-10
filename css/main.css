@@ -125,7 +125,6 @@ a:hover {
     border-radius: 10px;
 }
 
-
 .grid-stack-item .widget-content .lock-js {
     width: 0;
     height: 0;
@@ -144,6 +143,56 @@ a:hover {
     border-radius: 0;
     background: rgba(255, 255, 255, 0.01);
     border: 0;
+}
+
+/* General button style (reset) */
+.btn {
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    background: none;
+    cursor: pointer;
+    padding: 10px 40px;
+    display: inline-block;
+    border-radius: 10px;
+    margin: 15px 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    outline: none;
+    position: relative;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.btn:after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.btn:before {
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+}
+
+.btn-6 {
+    color: #fff;
+    background: #226fbe;
+    -webkit-transition: none;
+    -moz-transition: none;
+    transition: none;
 }
 
 @media (max-width: 768px) {

@@ -60,11 +60,45 @@ $(document).ready(() => {
             "colorTheme": THEME
         }
 
+        const COMMON_MARKET_DATA_CONFIG = {
+            "width": "100%",
+            "height": "100%",
+            "colorTheme": "dark",
+            "dateRange": "1D",
+            "showChart": true,
+            "locale": "en",
+            "largeChartUrl": "",
+            "isTransparent": false,
+            "showSymbolLogo": true,
+            "plotLineColorGrowing": "rgba(25, 118, 210, 1)",
+            "plotLineColorFalling": "rgba(255, 0, 0, 1)",
+            "gridLineColor": "rgba(42, 46, 57, 1)",
+            "scaleFontColor": "rgba(120, 123, 134, 1)",
+            "belowLineFillColorGrowing": "rgba(33, 150, 243, 0.12)",
+            "belowLineFillColorFalling": "rgba(33, 150, 243, 0.12)",
+            "symbolActiveColor": "rgba(33, 150, 243, 0.12)",
+            "tabs": [
+                {
+                    "title": "Indices",
+                    "symbols": [
+                        ...[... new Set([...mainStreamCoins, ...supportCoins])].map(item => {
+                            return {
+                                "s": `BINANCE:${item}USDT`,
+                                "d": `${item}`
+                            }
+                        })
+                    ],
+                    "originalTitle": "Indices"
+                }
+            ]
+        }
+
         const WIDGET_TYPE = {
             NORMAL: 0,
             TECHNICAL_ANALYSIS: 1,
             Custom: 2,
-            SINGLE_TICKER: 3
+            SINGLE_TICKER: 3,
+            MARKET_DATA: 4
         }
 
         /////////////////////////////////     BEGIN repair data                 ////////////////////////////////////////
@@ -96,19 +130,16 @@ $(document).ready(() => {
                 mobileSort: 100,
             },
 
-            ////////////// GENERATE SINGLE TICKET ////////////////////////////
-            ...[...mainStreamCoins, ...supportCoins].map(item => {
-                return {
-                    ...detectMob({w: 6, h: 1}, {w: 6, h: 2}),
-                    config: {
-                        ...COMMON_SINGLE_TIKKET,
-                        "symbol": `BINANCE:${item}USDT`,
-                    },
-                    type: WIDGET_TYPE.SINGLE_TICKER,
-                    mobileSort: 90,
-                }
-            }),
-            ////////////// END GENERATE SINGLE TICKET ////////////////////////
+            //////////////                            ////////////////////////
+            {
+                ...detectMob({w: 6, h: 3}),
+                config: {
+                    ...COMMON_MARKET_DATA_CONFIG,
+                },
+                type: WIDGET_TYPE.MARKET_DATA,
+                mobileSort: 90,
+            },
+            //////////////                            ////////////////////////
 
             ///////////// GENERATE CHART ////////////////////////////
             ...mainStreamCoins.map(item => {
@@ -164,6 +195,14 @@ $(document).ready(() => {
             if (item.type === WIDGET_TYPE.TECHNICAL_ANALYSIS) {
                 const script = document.createElement('script')
                 script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js'
+                script.async = true
+                script.innerHTML = JSON.stringify(item.config)
+                document.getElementById(widgetId).appendChild(script)
+            }
+
+            if (item.type === WIDGET_TYPE.MARKET_DATA) {
+                const script = document.createElement('script')
+                script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js'
                 script.async = true
                 script.innerHTML = JSON.stringify(item.config)
                 document.getElementById(widgetId).appendChild(script)
@@ -468,6 +507,28 @@ $(document).ready(() => {
         }
 
         ///////////////////////////////       End support UI JS                /////////////////////////////////////////
+
+        $('#add-widget-js').on('click', () => {
+            const date = new Date()
+            const widgetId = `widget-${date.getMilliseconds()}`
+
+            grid.addWidget({
+                ...detectMob({w: 6, h: 3,}),
+                content: `<div class="full-wh widget-content">
+    <div id="${widgetId}" class="full-wh grid-stack-item_content-js"></div>
+    <div class="lock-js clicked"></div>
+</div>`,
+                mobileSort: 73
+            })
+
+            if (document.getElementById(widgetId)) {
+                document.getElementById(widgetId).value = new TradingView.widget({
+                    ...COMMON_NORMAL,
+                    symbol: `BINANCE:RVNUSDT`,
+                    container_id: widgetId
+                })
+            }
+        })
 
         return grid
     }
