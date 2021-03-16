@@ -553,9 +553,12 @@ $(document).ready(() => {
             document.getElementById('add-widget-js').appendChild($(`<option value="${item}">${item}</option>`)[0])
         }))
 
-        $('#add-widget-js').on('change', (e) => {
+        $('#btn-add-widget-js').on('click', () => {
             const date = new Date()
             const widgetId = `widget-${date.getMilliseconds()}`
+            const targetValue = document.querySelector('#add-widget-js').value
+
+            console.log(targetValue)
 
             grid.addWidget({
                 ...detectMob({w: 6, h: 3,}),
@@ -569,7 +572,7 @@ $(document).ready(() => {
             if (document.getElementById(widgetId)) {
                 document.getElementById(widgetId).value = new TradingView.widget({
                     ...COMMON_NORMAL,
-                    symbol: `BINANCE:${e.target.value}USDT`,
+                    symbol: `BINANCE:${targetValue}USDT`,
                     container_id: widgetId
                 })
 
