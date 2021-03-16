@@ -85,7 +85,7 @@ $(document).ready(() => {
                 {
                     "title": "Indices",
                     "symbols": [
-                        ...[... new Set([...mainStreamCoins, ...supportCoins])].map(item => {
+                        ...[...new Set([...mainStreamCoins, ...supportCoins])].map(item => {
                             return {
                                 "s": `BINANCE:${item}USDT`,
                                 "d": `${item}`
@@ -113,55 +113,70 @@ $(document).ready(() => {
                 ...detectMob({w: 12, h: 2}, {w: 12, h: 6}),
                 config: {
                     // language=HTML
-                    content: `<div id="vue-app">
-    <div class="vue-app-container">
-        <div class="total"><span :class="className()">Total invested:</span> <span class="title-total">{{ roundNum(total) }} USDT | {{ roundNum(convertUSTCtoVND(total), 0) }} VND</span>
-        </div>
-        <div class="total-realtime"><span :class="className()">Equity value :</span> <span class="title-total">{{ roundNum(totalNew) }} USDT | {{ roundNum(convertUSTCtoVND(totalNew), 0) }} VND</span>
-        </div>
-        <div class="total-realtime"><span :class="className()">Gap:</span>
-            <transition name="slide-fade" mode="out-in"><span :key="profit.percent" :class="className(profit.money)">{{ profit.money }} USDT | {{ roundNum(convertUSTCtoVND(profit.money)) }} VND / {{ profit.percent }} %</span>
-        </div>
-        </trainsition>
-        <div class="title-total" style="padding: 2px 0 2px 0; font-weight: bold; font-size: 1.1rem">Breakdown profit &
-            loss
-        </div>
-<!--        <div v-for="(item, index) in profitBreakDown" :key="index">-->
-<!--            <span :class="item.order > 0 ? 'title' : 'title support'">{{ item.name }}:</span>-->
-<!--            <transition name="slide-fade" mode="out-in">-->
-<!--                <span :class="className(item.gap)" :key="item.percent" style="font-size: 0.8rem">{{ roundNum(item.gap) }} USDT | {{ roundNum(convertUSTCtoVND(item.gap)) }} VND / {{ roundNum(item.percent) }} % ({{ item.volume }} / {{ roundNum(item.realTimeMoney) }} USDT)</span>-->
-<!--            </transition>-->
-<!--        </div>-->
+                    content: `
+                        <div id="vue-app">
+                            <div class="vue-app-container">
+                                <div class="total"><span :class="className()">Total invested:</span> <span
+                                        class="title-total">{{ roundNum(total) }} USDT | {{ roundNum(convertUSTCtoVND(total), 0) }} VND</span>
+                                </div>
+                                <div class="total-realtime"><span :class="className()">Equity value :</span> <span
+                                        class="title-total">{{ roundNum(totalNew) }} USDT | {{ roundNum(convertUSTCtoVND(totalNew), 0) }} VND</span>
+                                </div>
+                                <div class="total-realtime"><span :class="className()">Gap:</span>
+                                    <transition name="slide-fade" mode="out-in"><span :key="profit.percent"
+                                                                                      :class="className(profit.money)">{{ profit.money }} USDT | {{ roundNum(convertUSTCtoVND(profit.money)) }} VND / {{ profit.percent }} %</span>
+                                </div>
+                                </trainsition>
+                                <div class="title-total"
+                                     style="padding: 2px 0 2px 0; font-weight: bold; font-size: 1.1rem">Breakdown profit
+                                    &
+                                    loss
+                                </div>
+                                <!--        <div v-for="(item, index) in profitBreakDown" :key="index">-->
+                                <!--            <span :class="item.order > 0 ? 'title' : 'title support'">{{ item.name }}:</span>-->
+                                <!--            <transition name="slide-fade" mode="out-in">-->
+                                <!--                <span :class="className(item.gap)" :key="item.percent" style="font-size: 0.8rem">{{ roundNum(item.gap) }} USDT | {{ roundNum(convertUSTCtoVND(item.gap)) }} VND / {{ roundNum(item.percent) }} % ({{ item.volume }} / {{ roundNum(item.realTimeMoney) }} USDT)</span>-->
+                                <!--            </transition>-->
+                                <!--        </div>-->
 
-        <div class="table-box">
-            <div class="table-body">
-                <table id="main-table" class="table">
-                    <thead>
-                    <tr>
-                        <th>NAME</th>
-                        <th>Profit / Loss</th>
-                        <th>Percent</th>
-                        <th v-if="!isMobile">Volume</th>
-                        <th>Equity value</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(item, index) in profitBreakDown" :key="index" :class="item.order > 0 ? 'normal' : 'support'">
-                            <td :class="className(item.gap)">{{ item.name }}</td>
-                            <td :class="className(item.gap)">{{ roundNum(item.gap) }}<br>  <span class="vnd">{{ roundNum(convertUSTCtoVND(item.gap), 0) }}</span></td>
-                            <td :class="className(item.gap)">{{ roundNum(item.percent) }} %</span></td>
-                            <td :class="className(item.gap)" v-if="!isMobile">{{ roundNum(item.volume) }}</td>
-                            <td :class="className(item.gap)">{{ roundNum(item.realTimeMoney) }}<br>  <span class="vnd">{{ roundNum(convertUSTCtoVND(item.realTimeMoney), 0) }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                                <div class="table-box">
+                                    <div class="table-body">
+                                        <table id="main-table" class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>NAME</th>
+                                                <th>Profit / Loss</th>
+                                                <th>Percent</th>
+                                                <th v-if="!isMobile">Volume</th>
+                                                <th>Equity value</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr v-for="(item, index) in profitBreakDown" :key="index"
+                                                :class="item.order > 0 ? 'normal' : 'support'">
+                                                <td :class="className(item.gap)"><a target="_blank"
+                                                                                    :href="linkToTradingView(item.name)">{{
+                                                    item.name }}</a></td>
+                                                <td :class="className(item.gap)">{{ roundNum(item.gap) }}<br> <span
+                                                        class="vnd">{{ roundNum(convertUSTCtoVND(item.gap), 0) }}</span>
+                                                </td>
+                                                <td :class="className(item.gap)">{{ roundNum(item.percent) }}
+                                                    %</span></td>
+                                                <td :class="className(item.gap)" v-if="!isMobile">{{
+                                                    roundNum(item.volume) }}
+                                                </td>
+                                                <td :class="className(item.gap)">{{ roundNum(item.realTimeMoney) }}<br>
+                                                    <span class="vnd">{{ roundNum(convertUSTCtoVND(item.realTimeMoney), 0) }}
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
 
-        <!--        <button style="margin-top: 5px" v-on:click="getCoinListFromApi">Refresh</button>-->
-        <!--        <button v-on:click="handleCopy">Copy</button>-->
-    </div>
-</div>`
+                                <button style="margin-right: 100px" v-on:click="turnOnNotification = !turnOnNotification">{{ turnOnNotification ? 'Is ON' : 'Is Off' }}</button>
+                            </div>
+                        </div>`
                 },
                 type: WIDGET_TYPE.Custom,
                 mobileSort: 100,
@@ -169,7 +184,7 @@ $(document).ready(() => {
 
             //////////////                            ////////////////////////
             {
-                ...detectMob({w: 6, h: 6}, { w: 12, h: 7 }, {w: 12, h: 2}),
+                ...detectMob({w: 6, h: 6}, {w: 12, h: 7}, {w: 12, h: 2}),
                 config: {
                     ...COMMON_MARKET_DATA_CONFIG,
                 },
@@ -264,7 +279,10 @@ $(document).ready(() => {
                         wallet: [],
                         priceUstcToBvnd: 24000,
                         priceRealTime: {},
-                        isMobile
+                        isMobile,
+                        notifications: {},
+                        notiRead: {},
+                        turnOnNotification: false
                     },
                     computed: {
                         total() {
@@ -351,18 +369,46 @@ $(document).ready(() => {
                                     }
                                 )
                             })
-                        }
+                        },
                     },
 
                     created() {
                         this.getWallet()
                         setInterval(this.getWallet, 3000)
-
-                        // this.getCoinListFromApi()
-                        // setInterval(this.getCoinListFromApi, 1000)
-
                         this.getUSTCToVND()
                         setInterval(this.getUSTCToVND, 10000)
+
+                        this.checkMutationOfCoin()
+                        setTimeout(this.checkMutationOfCoin, 5000)
+
+                        setInterval(() => {
+                            if (this.turnOnNotification) {
+                                const notiAsArray = Object.entries(this.notifications)
+                                let time = 1000
+                                let message = ''
+                                let i = 0
+
+                                for (let [coinName, value] of notiAsArray) {
+                                    i++
+                                    message = `${message} ${value} \n`
+
+                                    if (i % 3 === 0) {
+                                        setTimeout(() => {
+                                            this.notifyMe({
+                                                title: 'UP & DOWN Notification', message: message
+                                            })
+                                        }, time)
+                                    }
+
+                                    time = time + 250
+
+                                    delete this.notifications[coinName]
+                                    this.pushMessageToNotiRead(coinName, value)
+                                }
+
+                                console.log(JSON.stringify(this.notifications))
+                            }
+                        }, 30000)
                     },
 
                     methods: {
@@ -405,6 +451,9 @@ $(document).ready(() => {
                             //             this.getCoinListFromApi()
                             //         }
                             //     }
+                        },
+                        linkToTradingView(name) {
+                            return `https://www.tradingview.com/chart?symbol=BINANCE%3A${name}USDT`
                         },
                         getCoinListFromApi() {
                             this.coinsFollowed.map(item => {
@@ -501,7 +550,80 @@ $(document).ready(() => {
                         },
                         handleNaN(number) {
                             return isNaN(number) ? 0 : number
-                        }
+                        },
+                        /**
+                         * @param payload || Object {title: string, message: string, img?: string, }
+                         */
+                        notifyMe(payload) {
+                            const send = () => {
+                                new Notification(payload.title, {
+                                    body: payload.message,
+                                    icon: '/contract.png'
+                                });
+                            }
+
+                            // Let's check if the browser supports notifications
+                            if (!("Notification" in window)) {
+                                alert("This browser does not support desktop notification");
+                            } else if (Notification.permission === "granted") {
+                                send()
+                            } else if (Notification.permission !== "denied") {
+                                Notification.requestPermission().then(function (permission) {
+                                    if (permission === "granted") {
+                                        send()
+                                    }
+                                });
+                            }
+                        },
+                        checkMutationOfCoin() {
+                            const t0 = performance.now()
+                            const value = this.profitBreakDown
+                            if (value.length > 0) {
+                                let a = null
+                                let item = null
+                                let rangeDefine = [
+                                    [2, 5, 2, 'UP'],
+                                    [5, 10, 5, 'UP'],
+                                    [10, 15, 10, 'UP'],
+                                    [15, 20, 15, 'UP'],
+                                    [20, 1000, 20, 'UP'],
+                                    [-10, -5, -5, 'DOWN'],
+                                    [-15, -10, -10, 'DOWN'],
+                                    [-20, -15, -15, 'DOWN'],
+                                ]
+
+                                for (let j = 0; j < value.length; j++) {
+                                    item = value[j]
+                                    for (let i = 0; i < rangeDefine.length; i++) {
+                                        if (rangeDefine[i][0]<=item.gap&item.gap<rangeDefine[i][1]) {
+                                            this.pushMessageToNotification(item.name, `${item.name} has ${rangeDefine[i][3]} > ${rangeDefine[i][2]} USDT`)
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            const t1 = performance.now()
+                            console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")
+                        },
+                        pushMessageToNotification(name, message) {
+                            if (
+                                this.notiRead[name] && message.localeCompare(this.notiRead[name]) === 0 ||
+                                this.notifications[name] && message.localeCompare(this.notifications[name]) === 0
+                            ) {
+                                return
+                            }
+
+                            this.notifications[name] = message
+                        },
+
+                        pushMessageToNotiRead(name, message) {
+                            if (this.notiRead[name] && message.localeCompare(this.notiRead[name]) === 0) {
+                                return
+                            }
+
+                            this.notiRead[name] = message
+                        },
                     }
                 })
             }
@@ -549,7 +671,7 @@ $(document).ready(() => {
         ///////////////////////////////       End support UI JS                /////////////////////////////////////////
 
 
-        [... new Set([...supportCoins, ...mainStreamCoins])].map((item => {
+        [...new Set([...supportCoins, ...mainStreamCoins])].map((item => {
             document.getElementById('add-widget-js').appendChild($(`<option value="${item}">${item}</option>`)[0])
         }))
 
