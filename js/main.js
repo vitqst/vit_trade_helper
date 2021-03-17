@@ -1,5 +1,5 @@
 $(document).ready(() => {
-    const beginRender = (mainStreamCoins, supportCoins) => {
+    const beginRender = (mainStreamCoins, supportCoins, notes) => {
         const isPortraitMode = window.innerWidth <= 1081
         const isMobile = window.innerWidth <= 768
         const THEME = 'dark' // light | dark
@@ -132,6 +132,8 @@ $(document).ready(() => {
 <!--                <span :class="className(item.gap)" :key="item.percent" style="font-size: 0.8rem">{{ roundNum(item.gap) }} USDT | {{ roundNum(convertUSTCtoVND(item.gap)) }} VND / {{ roundNum(item.percent) }} % ({{ item.volume }} / {{ roundNum(item.realTimeMoney) }} USDT)</span>-->
 <!--            </transition>-->
 <!--        </div>-->
+        
+        <div>SELL NOTE: {{ JSON.stringify(notes) }}</div>
 
         <div class="table-box">
             <div class="table-body">
@@ -150,7 +152,7 @@ $(document).ready(() => {
                             <td :class="className(item.gap)">{{ item.name }}</td>
                             <td :class="className(item.gap)">{{ roundNum(item.gap) }}<br>  <span class="vnd">{{ roundNum(convertUSTCtoVND(item.gap), 0) }}</span></td>
                             <td :class="className(item.gap)">{{ roundNum(item.percent) }} %</span></td>
-                            <td :class="className(item.gap)" v-if="!isMobile">{{ roundNum(item.volume) }}</td>
+                            <td :class="className(item.gap)" v-if="!isMobile">{{ roundNum(item.volume) }}<br>  <span class="vnd">{{ roundNum(priceRealTime[item.name], 5) }}</td>
                             <td :class="className(item.gap)">{{ roundNum(item.realTimeMoney) }}<br>  <span class="vnd">{{ roundNum(convertUSTCtoVND(item.realTimeMoney), 0) }}</td>
                         </tr>
                     </tbody>
@@ -264,7 +266,8 @@ $(document).ready(() => {
                         wallet: [],
                         priceUstcToBvnd: 24000,
                         priceRealTime: {},
-                        isMobile
+                        isMobile,
+                        notes
                     },
                     computed: {
                         total() {
@@ -599,10 +602,12 @@ $(document).ready(() => {
                         json => {
                             const coinFollowed = json[json.findIndex(item => item.group_name === 'COIN_FOLLOWED')].coins
                             const supportCoin = json[json.findIndex(item => item.group_name === 'SUPPORT_COIN')].coins
+                            const notes = json[json.findIndex(item => item.group_name === 'NOTE')].coins
 
                             beginRender(
                                 coinFollowed || MAINSTREAM_COIN,
-                                supportCoin || SUPPORT_COIN
+                                supportCoin || SUPPORT_COIN,
+                                notes || {}
                             )
                         }
                     )
