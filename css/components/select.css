@@ -1,0 +1,35 @@
+@charset "UTF-8";
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: 0;
+    outline: 0;
+    background: none;
+    color: inherit;
+    box-shadow: none;
+}
+
+select::-ms-expand {
+    display: none;
+}
+
+/* Custom Select wrapper */
+.select {
+    position: relative;
+    display: flex;
+    min-width: 100px;
+    background: #369ce2;
+    border-radius: 0.25rem;
+    color: #fff;
+    font-weight: bold;
+    overflow: hidden;
+    font-size: inherit;
+}
+
+.select select {
+    flex: 1;
+    padding: 1em;
+    cursor: pointer;
+}

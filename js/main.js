@@ -44,7 +44,7 @@ $(document).ready(() => {
       autosize: true,
       symbol: "BINANCE:BTCUSDT",
       interval: "D",
-      timezone: "Etc/UTC",
+      timezone: "Asia/Ho_Chi_Minh", // https://www.tradingview.com/charting-library-docs/latest/ui_elements/timezones?_highlight=timezone
       theme: THEME,
       style: "1",
       locale: "en",
@@ -59,6 +59,11 @@ $(document).ready(() => {
       hideideas: 1,
       studies: ["RSI@tv-basicstudies", "BB@tv-basicstudies"],
       container_id: "tradingview_66eb0",
+      disabled_features: [],
+      enabled_features: [
+        // countdown
+        "countdown",
+      ],
     };
 
     const WIDGET_TYPE = {
@@ -130,7 +135,7 @@ $(document).ready(() => {
         h: item.h,
         content: `<div class="full-wh widget-content">
     <div id="widget-${k}" class="full-wh grid-stack-item_content-js"></div>
-    <div class="clicked"></div>
+    <div class="lock-js clicked"></div>
 </div>`,
         mobileSort: item.mobileSort,
       };
@@ -193,6 +198,43 @@ $(document).ready(() => {
     });
   };
 
+  const addEventListeners = () => {
+    /////// BUTTON LOCK UNLOCK ///////////////////////////////////////////
+    const btnLockUnlock = document.getElementById("btn-lock-unlock-js");
+
+    btnLockUnlock.addEventListener("click", () => {
+      // get all .widget-content > .clicked
+      const clicked = [...document.getElementsByClassName("clicked")];
+
+      // if btnLockUnlock textContent === "LOCK"
+      if (btnLockUnlock.textContent === "LOCK") {
+        // add class "lock-js" for all .widget-content > .clicked
+        clicked.map((item) => item.classList.add("lock-js"));
+        // change textContent to "UNLOCK"
+        btnLockUnlock.textContent = "UNLOCK";
+      } else {
+        // remove class "lock-js" for all .widget-content > .clicked
+        clicked.map((item) => item.classList.remove("lock-js"));
+        // change textContent to "LOCK"
+        btnLockUnlock.textContent = "LOCK";
+      }
+    });
+
+    /////// SELECT COIN ///////////////////////////////////////////
+    const selectCoin = document.getElementById("select-coin-js");
+
+    // add default value for selectCoin
+    selectCoin.value = coin;
+
+    selectCoin.addEventListener("change", (e) => {
+      const coin = e.target.value;
+
+      const urlParams = new URLSearchParams(window.location.search);
+      urlParams.set("coin", coin);
+      window.location.search = urlParams;
+    });
+  };
+
   ///////////////////////////////////       START APPLICATION                /////////////////////////////////////////
 
   const main = () => {
@@ -203,6 +245,7 @@ $(document).ready(() => {
     }
 
     beginRender(coin);
+    addEventListeners();
   };
 
   main();

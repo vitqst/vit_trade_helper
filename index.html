@@ -1,33 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Tracking Real Time - Cryptocurrency @vuidx TradingView</title>
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no"
+    />
 
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="manifest.json" />
     <script src="js/gridstack-h5.js"></script>
-    <link href="css/gridstack.min.css" rel="stylesheet"/>
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <link href="css/gridstack.min.css" rel="stylesheet" />
     <script
-            src="https://code.jquery.com/jquery-3.6.0.min.js"
-            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-            crossorigin="anonymous"></script>
+      type="text/javascript"
+      src="https://s3.tradingview.com/tv.js"
+    ></script>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
     <script src="js/vue.js"></script>
-    <link rel="stylesheet" href="/css/main.css?t=c578f1da0e9de639d3cf88951aa7f2234249">
-</head>
-<body>
-
-<div class="container">
-    <div class="scroll-mobile-area"></div>
-    <div class="grid-stack full-wh"></div>
-        <div style="display: flex; justify-content: flex-end">
-        <select class="btn btn-6" id="add-widget-js"></select>
-        <button class="btn btn-6" id="btn-add-widget-js">OK</button>
+    <link
+      rel="stylesheet"
+      href="/css/main.css?t=c578f1da0e9de639d3cf88951aa7f2234249"
+    />
+    <link
+      rel="stylesheet"
+      href="/css/components/select.css?t=c578f1da0e9de639d3cf88951aa7f2234249"
+    />
+    <link
+      rel="stylesheet"
+      href="/css/components/space.css?t=c578f1da0e9de639d3cf88951aa7f2234249"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="tool-bar">
+        <div style="display: flex; justify-content: flex-end" class="m-5">
+          <button class="btn btn-6" id="btn-lock-unlock-js">UNLOCK</button>
+          <label class="select m-l-5 m-r-5" for="coin">
+            <select name="coin" id="select-coin-js">
+              <option value="ETH">ETH</option>
+              <option value="BTC">BTC</option>
+            </select>
+          </label>
+        </div>
+      </div>
+      <div class="scroll-mobile-area"></div>
+      <div class="grid-stack full-wh"></div>
+      <div style="display: flex; justify-content: flex-end"></div>
     </div>
-</div>
-<script src="js/main.js?t=c578f1da0e9de639d3cf88951aa7f2234249"></script>
-</body>
+    <script src="js/main.js?t=c578f1da0e9de639d3cf88951aa7f2234249"></script>
+  </body>
 </html>
