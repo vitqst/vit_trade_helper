@@ -130,7 +130,7 @@ $(document).ready(() => {
         h: item.h,
         content: `<div class="full-wh widget-content">
     <div id="widget-${k}" class="full-wh grid-stack-item_content-js"></div>
-    <div class="lock-js clicked"></div>
+    <div class="clicked"></div>
 </div>`,
         mobileSort: item.mobileSort,
       };
