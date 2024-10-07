@@ -88,15 +88,7 @@ $(document).ready(() => {
     const listWidgetData = [
       {
         pair: `${EXCHANGE}:${coin}USDT.P`,
-        timeFrame: INTERVAL.m5,
-      },
-      {
-        pair: `${EXCHANGE}:${coin}USDT.P`,
         timeFrame: INTERVAL.m15,
-      },
-      {
-        pair: `${EXCHANGE}:${coin}USDT.P`,
-        timeFrame: INTERVAL.m30,
       },
       {
         pair: `${EXCHANGE}:${coin}USDT.P`,
