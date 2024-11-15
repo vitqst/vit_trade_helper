@@ -1,243 +1,240 @@
-$(document).ready(() => {
-  const beginRender = (coin) => {
-    const isPortraitMode = window.innerWidth <= 1081;
-    const isMobile = window.innerWidth <= 768;
-    const THEME = "dark"; // light | dark
-    const INTERVAL = {
-      m5: "5",
-      m15: "15",
-      m30: "30",
-      h1: "60",
-      h4: "240",
-      d: "D",
-      w: "W",
-    };
-    const EXCHANGE = "MEXC"; // MEXC
+// config.js
+const CONFIG = {
+  THEME: "dark",
+  INTERVAL: {
+    m5: "5",
+    m15: "15",
+    m30: "30",
+    h1: "60",
+    h4: "240",
+    d: "D",
+    w: "W",
+  },
+  EXCHANGE: "MEXC",
+  TIMEZONE: "Asia/Ho_Chi_Minh",
+  DEFAULT_COIN: "ETH",
+};
 
-    function detectMob(defaultWH, fallbackWH, fallBackMobile) {
-      if (isMobile) {
-        if (fallBackMobile) {
-          return fallBackMobile;
-        }
+// utils.js
+const Utils = {
+  isMobile: () => window.innerWidth <= 768,
+  isPortraitMode: () => window.innerWidth <= 1081,
 
-        return {
-          w: 12,
-          h: 1,
-        };
-      }
-
-      if (isPortraitMode) {
-        if (fallbackWH) {
-          return fallbackWH;
-        }
-
-        return {
-          w: 12,
-          h: 5,
-        };
-      }
-
-      return defaultWH;
+  detectMob: (defaultWH, fallbackWH, fallBackMobile) => {
+    if (Utils.isMobile()) {
+      return fallBackMobile || { w: 12, h: 1 };
     }
+    if (Utils.isPortraitMode()) {
+      return fallbackWH || { w: 12, h: 5 };
+    }
+    return defaultWH;
+  },
 
-    const COMMON_NORMAL = {
-      autosize: true,
-      symbol: "BINANCE:BTCUSDT",
-      interval: "D",
-      timezone: "Asia/Ho_Chi_Minh", // https://www.tradingview.com/charting-library-docs/latest/ui_elements/timezones?_highlight=timezone
-      theme: THEME,
-      style: "1",
-      locale: "en",
-      toolbar_bg: "rgba(0, 0, 0, 1)",
-      enable_publishing: false,
-      hide_top_toolbar: false,
-      allow_symbol_change: true,
-      save_image: false,
-      hideideas: false,
-      withdateranges: true,
-      hide_side_toolbar: isMobile,
-      hideideas: 1,
-      studies: ["RSI@tv-basicstudies", "BB@tv-basicstudies"],
-      container_id: "tradingview_66eb0",
-      disabled_features: [],
-      enabled_features: [
-        // countdown
-        "countdown",
-      ],
+  getUrlParam: (param) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  },
+
+  setUrlParam: (param, value) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set(param, value);
+    window.location.search = urlParams;
+  },
+};
+
+// tradingViewConfig.js
+const TradingViewConfig = {
+  COMMON_NORMAL: {
+    autosize: true,
+    symbol: "BINANCE:BTCUSDT",
+    interval: "D",
+    timezone: CONFIG.TIMEZONE,
+    theme: CONFIG.THEME,
+    style: "1",
+    locale: "en",
+    toolbar_bg: "rgba(0, 0, 0, 1)",
+    enable_publishing: false,
+    hide_top_toolbar: false,
+    allow_symbol_change: true,
+    save_image: false,
+    hideideas: false,
+    withdateranges: true,
+    hide_side_toolbar: Utils.isMobile(),
+    hideideas: 1,
+    studies: ["RSI@tv-basicstudies", "BB@tv-basicstudies"],
+    container_id: "tradingview_66eb0",
+    disabled_features: [],
+    enabled_features: ["countdown"],
+  },
+
+  WIDGET_TYPE: {
+    NORMAL: 0,
+    VUEJS: 1,
+  },
+};
+
+// widgetManager.js
+class WidgetManager {
+  constructor(coin) {
+    this.coin = coin;
+  }
+
+  gridItemBuilder(pair, timeFrame, w, h) {
+    return {
+      ...Utils.detectMob({ w, h }),
+      config: {
+        ...TradingViewConfig.COMMON_NORMAL,
+        symbol: pair,
+        interval: timeFrame,
+      },
+      type: TradingViewConfig.WIDGET_TYPE.NORMAL,
     };
+  }
 
-    const WIDGET_TYPE = {
-      NORMAL: 0,
-      VUEJS: 1,
-    };
-
-    /////////////////////////////////     BEGIN repair data                 ////////////////////////////////////////
-
-    const gridItemBuilder = (pair, timeFrame, w, h) => {
-      return {
-        ...detectMob({ w, h }),
-        config: {
-          ...COMMON_NORMAL,
-          symbol: pair,
-          interval: timeFrame,
-        },
-        type: WIDGET_TYPE.NORMAL,
-      };
-    };
-
+  getWidgets() {
     const listWidgetData = [
       {
-        pair: `${EXCHANGE}:${coin}USDT.P`,
-        timeFrame: INTERVAL.m15,
+        pair: `${CONFIG.EXCHANGE}:${this.coin}USDT.P`,
+        timeFrame: CONFIG.INTERVAL.m15,
       },
       {
-        pair: `${EXCHANGE}:${coin}USDT.P`,
-        timeFrame: INTERVAL.h1,
+        pair: `${CONFIG.EXCHANGE}:${this.coin}USDT.P`,
+        timeFrame: CONFIG.INTERVAL.h1,
       },
       {
-        pair: `${EXCHANGE}:${coin}USDT.P`,
-        timeFrame: INTERVAL.h4,
+        pair: `${CONFIG.EXCHANGE}:${this.coin}USDT.P`,
+        timeFrame: CONFIG.INTERVAL.h4,
       },
       {
-        pair: `${EXCHANGE}:${coin}USDT.P`,
-        timeFrame: INTERVAL.d,
+        pair: `${CONFIG.EXCHANGE}:${this.coin}USDT.P`,
+        timeFrame: CONFIG.INTERVAL.d,
       },
     ];
 
-    const widgets = [
-      ...listWidgetData.map((item) => {
-        return gridItemBuilder(item.pair, item.timeFrame, 6, 3);
-      }),
-    ];
+    return listWidgetData.map((item) =>
+      this.gridItemBuilder(item.pair, item.timeFrame, 6, 3)
+    );
+  }
+}
 
-    /////////////////////////////////     END repair data                  /////////////////////////////////////////
+// gridManager.js
+class GridManager {
+  constructor(widgets) {
+    this.widgets = widgets;
+    this.grid = null;
+  }
 
-    ////////////////////////////////      BEGIN Render GridStack           /////////////////////////////////////////
-
-    const grid = GridStack.init({
+  init() {
+    this.grid = GridStack.init({
       itemClass: "custom-item",
-      draggable: {
-        scroll: false,
-      },
+      draggable: { scroll: false },
     });
 
-    const widgetsGrid = widgets.map((item, k) => {
-      return {
-        w: item.w,
-        h: item.h,
-        content: `<div class="full-wh widget-content">
-    <div id="widget-${k}" class="full-wh grid-stack-item_content-js"></div>
-    <div class="lock-js clicked"></div>
-</div>`,
-        mobileSort: item.mobileSort,
-      };
-    });
+    const widgetsGrid = this.widgets.map((item, k) => ({
+      w: item.w,
+      h: item.h,
+      content: `<div class="full-wh widget-content">
+        <div id="widget-${k}" class="full-wh grid-stack-item_content-js"></div>
+        <div class="lock-js clicked"></div>
+      </div>`,
+      mobileSort: item.mobileSort,
+    }));
 
-    grid.load(
-      isMobile
+    this.grid.load(
+      Utils.isMobile()
         ? widgetsGrid.sort((a, b) => a.mobileSort - b.mobileSort)
         : widgetsGrid
     );
+  }
 
-    // it support 4 type of widget
-    // 1. Normal
-    widgets.map((item, k) => {
+  renderWidgets() {
+    this.widgets.forEach((item, k) => {
       const widgetId = `widget-${k}`;
-
-      if (item.type === WIDGET_TYPE.NORMAL) {
-        if (document.getElementById(widgetId)) {
-          // debugger
-          document.getElementById(widgetId).value = new TradingView.widget({
-            ...item.config,
-            container_id: widgetId,
-          });
-        }
-      }
-
-      ////////////////////////////////      END Render GridStack             /////////////////////////////////////////
-
-      ////////////////////////////////      Start support UI JS              /////////////////////////////////////////
-
-      if (isMobile) {
-        setTimeout(() => {
-          const a = [...document.getElementsByClassName("custom-item")].map(
-            (item) => {
-              const height = item.getElementsByClassName(
-                "grid-stack-item_content-js"
-              )[0].firstChild.style.height;
-
-              if (height && height !== "100%") {
-                item.style.height = `calc(30px + ${height})`;
-                item.style.minHeight = `calc(30px + ${height})`;
-              } else {
-                item.style.height = `${item.offsetHeight + 40}px`;
-                item.style.minHeight = `${item.offsetHeight + 40}px`;
-              }
-            }
-          );
-
-          const vueAppHeight = Number($(".vue-app-container")[0].offsetHeight);
-          document.getElementsByClassName(
-            "custom-item"
-          )[0].style.height = `400px`;
-          document.getElementsByClassName(
-            "custom-item"
-          )[0].style.minHeight = `400pxpx`;
-        }, 3000);
-      }
-
-      return grid;
-    });
-  };
-
-  const addEventListeners = () => {
-    /////// BUTTON LOCK UNLOCK ///////////////////////////////////////////
-    const btnLockUnlock = document.getElementById("btn-lock-unlock-js");
-
-    btnLockUnlock.addEventListener("click", () => {
-      // get all .widget-content > .clicked
-      const clicked = [...document.getElementsByClassName("clicked")];
-
-      // if btnLockUnlock textContent === "LOCK"
-      if (btnLockUnlock.textContent === "LOCK") {
-        // add class "lock-js" for all .widget-content > .clicked
-        clicked.map((item) => item.classList.add("lock-js"));
-        // change textContent to "UNLOCK"
-        btnLockUnlock.textContent = "UNLOCK";
-      } else {
-        // remove class "lock-js" for all .widget-content > .clicked
-        clicked.map((item) => item.classList.remove("lock-js"));
-        // change textContent to "LOCK"
-        btnLockUnlock.textContent = "LOCK";
+      if (
+        item.type === TradingViewConfig.WIDGET_TYPE.NORMAL &&
+        document.getElementById(widgetId)
+      ) {
+        document.getElementById(widgetId).value = new TradingView.widget({
+          ...item.config,
+          container_id: widgetId,
+        });
       }
     });
+  }
 
-    /////// SELECT COIN ///////////////////////////////////////////
-    const selectCoin = document.getElementById("select-coin-js");
+  adjustMobileLayout() {
+    if (Utils.isMobile()) {
+      setTimeout(() => {
+        document.querySelectorAll(".custom-item").forEach((item) => {
+          const height = item.querySelector(".grid-stack-item_content-js")
+            .firstChild.style.height;
+          item.style.height =
+            height && height !== "100%"
+              ? `calc(30px + ${height})`
+              : `${item.offsetHeight + 40}px`;
+          item.style.minHeight = item.style.height;
+        });
 
-    // add default value for selectCoin
-    selectCoin.value = coin;
-
-    selectCoin.addEventListener("change", (e) => {
-      const coin = e.target.value;
-
-      const urlParams = new URLSearchParams(window.location.search);
-      urlParams.set("coin", coin);
-      window.location.search = urlParams;
-    });
-  };
-
-  ///////////////////////////////////       START APPLICATION                /////////////////////////////////////////
-
-  const main = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    coin = urlParams.get("coin");
-    if (coin === null) {
-      coin = "ETH";
+        const vueAppHeight =
+          document.querySelector(".vue-app-container").offsetHeight;
+        document.querySelector(".custom-item").style.height = "400px";
+        document.querySelector(".custom-item").style.minHeight = "400px";
+      }, 3000);
     }
+  }
+}
 
-    beginRender(coin);
-    addEventListeners();
+// uiManager.js
+class UIManager {
+  constructor() {
+    this.btnLockUnlock = document.getElementById("btn-lock-unlock-js");
+    this.selectCoin = document.getElementById("select-coin-js");
+  }
+
+  init(coin) {
+    this.selectCoin.value = coin;
+    this.addEventListeners();
+  }
+
+  addEventListeners() {
+    this.btnLockUnlock.addEventListener(
+      "click",
+      this.handleLockUnlock.bind(this)
+    );
+    this.selectCoin.addEventListener(
+      "change",
+      this.handleCoinChange.bind(this)
+    );
+  }
+
+  handleLockUnlock() {
+    const clicked = document.querySelectorAll(".clicked");
+    const isLocking = this.btnLockUnlock.textContent === "LOCK";
+
+    clicked.forEach((item) => item.classList.toggle("lock-js", isLocking));
+    this.btnLockUnlock.textContent = isLocking ? "UNLOCK" : "LOCK";
+  }
+
+  handleCoinChange(e) {
+    Utils.setUrlParam("coin", e.target.value);
+  }
+}
+
+// main.js
+$(document).ready(() => {
+  const main = () => {
+    const coin = Utils.getUrlParam("coin") || CONFIG.DEFAULT_COIN;
+
+    const widgetManager = new WidgetManager(coin);
+    const widgets = widgetManager.getWidgets();
+
+    const gridManager = new GridManager(widgets);
+    gridManager.init();
+    gridManager.renderWidgets();
+    gridManager.adjustMobileLayout();
+
+    const uiManager = new UIManager();
+    uiManager.init(coin);
   };
 
   main();
