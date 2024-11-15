@@ -121,10 +121,13 @@ class WidgetManager {
         customConfig: {
           studies: [
             {
-              id: "BB@tv-basicstudies",
-              inputs: {
-                length: 20,
-              },
+              id: "STD;RSI",
+            },
+            {
+              id: "STD;MACD",
+            },
+            {
+              id: "STD;Bollinger_Bands",
             },
             {
               id: "MASimple@tv-basicstudies",
@@ -138,12 +141,6 @@ class WidgetManager {
                 length: 200,
               },
             },
-            {
-              id: "STD;RSI",
-            },
-            {
-              id: "STD;MACD",
-            },
           ],
         },
       },
@@ -155,15 +152,27 @@ class WidgetManager {
         customConfig: {
           studies: [
             {
-              id: "STD;MA%1Cross",
+              id: "STD;RSI",
             },
             {
-              id: "STD;RSI",
+              id: "STD;MACD",
             },
             {
               id: "STD;Bollinger_Bands",
             },
-          ]
+            {
+              id: "MASimple@tv-basicstudies",
+              inputs: {
+                length: 50,
+              },
+            },
+            {
+              id: "MASimple@tv-basicstudies",
+              inputs: {
+                length: 200,
+              },
+            },
+          ],
         },
       },
     ];
