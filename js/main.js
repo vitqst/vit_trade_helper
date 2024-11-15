@@ -127,17 +127,22 @@ class WidgetManager {
               },
             },
             {
-              id: "STD;EMA",
-            },
-            {
               id: "MASimple@tv-basicstudies",
               inputs: {
                 length: 50,
               },
-              overrides: { "plot.color": "blue" }, // Set the 18-period SMA to blue
+            },
+            {
+              id: "MASimple@tv-basicstudies",
+              inputs: {
+                length: 200,
+              },
             },
             {
               id: "STD;RSI",
+            },
+            {
+              id: "STD;MACD",
             },
           ],
         },
