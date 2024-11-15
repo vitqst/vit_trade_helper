@@ -153,7 +153,17 @@ class WidgetManager {
         w: 6,
         h: 6,
         customConfig: {
-          studies: ["STD;MA%1Cross", "STD;RSI", "STD;Bollinger_Bands"],
+          studies: [
+            {
+              id: "STD;MA%1Cross",
+            },
+            {
+              id: "STD;RSI",
+            },
+            {
+              id: "STD;Bollinger_Bands",
+            },
+          ]
         },
       },
     ];
