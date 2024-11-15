@@ -2,6 +2,7 @@
 const CONFIG = {
   THEME: "dark",
   INTERVAL: {
+    m1: "1",
     m5: "5",
     m15: "15",
     m30: "30",
@@ -79,13 +80,14 @@ class WidgetManager {
     this.coin = coin;
   }
 
-  gridItemBuilder(pair, timeFrame, w, h) {
+  gridItemBuilder(pair, timeFrame, w, h, customConfig) {
     return {
       ...Utils.detectMob({ w, h }),
       config: {
         ...TradingViewConfig.COMMON_NORMAL,
         symbol: pair,
         interval: timeFrame,
+        ...customConfig,
       },
       type: TradingViewConfig.WIDGET_TYPE.NORMAL,
     };
@@ -95,24 +97,70 @@ class WidgetManager {
     const listWidgetData = [
       {
         pair: `${CONFIG.EXCHANGE}:${this.coin}USDT.P`,
-        timeFrame: CONFIG.INTERVAL.m15,
+        timeFrame: CONFIG.INTERVAL.m1,
+        w: 6,
+        h: 4,
+        customConfig: {
+          studies: ["STD;MACD", "STD;Bollinger_Bands"],
+        },
+      },
+      {
+        pair: `${CONFIG.EXCHANGE}:${this.coin}USDT.P`,
+        timeFrame: CONFIG.INTERVAL.m5,
+        w: 6,
+        h: 4,
+        customConfig: {
+          studies: ["STD;MACD", "STD;Bollinger_Bands"],
+        },
       },
       {
         pair: `${CONFIG.EXCHANGE}:${this.coin}USDT.P`,
         timeFrame: CONFIG.INTERVAL.h1,
+        w: 6,
+        h: 4,
+        customConfig: {
+          studies: [
+            {
+              id: "BB@tv-basicstudies",
+              inputs: {
+                length: 20,
+              },
+            },
+            {
+              id: "STD;EMA",
+            },
+            {
+              id: "MASimple@tv-basicstudies",
+              inputs: {
+                length: 50,
+              },
+              overrides: { "plot.color": "blue" }, // Set the 18-period SMA to blue
+            },
+            {
+              id: "STD;RSI",
+            },
+          ],
+        },
       },
       {
         pair: `${CONFIG.EXCHANGE}:${this.coin}USDT.P`,
         timeFrame: CONFIG.INTERVAL.h4,
-      },
-      {
-        pair: `${CONFIG.EXCHANGE}:${this.coin}USDT.P`,
-        timeFrame: CONFIG.INTERVAL.d,
+        w: 6,
+        h: 4,
+        customConfig: {
+          studies: ["STD;MA%1Cross", "STD;RSI", "STD;Bollinger_Bands"],
+        },
       },
     ];
 
     return listWidgetData.map((item) =>
-      this.gridItemBuilder(item.pair, item.timeFrame, 6, 3)
+      this.gridItemBuilder(
+        item.pair,
+        item.timeFrame,
+        item.w,
+        item.h,
+        item.customConfig
+      )
     );
   }
 }
@@ -154,7 +202,7 @@ class GridManager {
         item.type === TradingViewConfig.WIDGET_TYPE.NORMAL &&
         document.getElementById(widgetId)
       ) {
-        document.getElementById(widgetId).value = new TradingView.widget({
+        new TradingView.widget({
           ...item.config,
           container_id: widgetId,
         });
