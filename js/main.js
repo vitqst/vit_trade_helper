@@ -99,7 +99,7 @@ class WidgetManager {
         pair: `${CONFIG.EXCHANGE}:${this.coin}USDT.P`,
         timeFrame: CONFIG.INTERVAL.m1,
         w: 6,
-        h: 4,
+        h: 6,
         customConfig: {
           studies: ["STD;MACD", "STD;Bollinger_Bands"],
         },
@@ -108,7 +108,7 @@ class WidgetManager {
         pair: `${CONFIG.EXCHANGE}:${this.coin}USDT.P`,
         timeFrame: CONFIG.INTERVAL.m5,
         w: 6,
-        h: 4,
+        h: 6,
         customConfig: {
           studies: ["STD;MACD", "STD;Bollinger_Bands"],
         },
@@ -117,7 +117,7 @@ class WidgetManager {
         pair: `${CONFIG.EXCHANGE}:${this.coin}USDT.P`,
         timeFrame: CONFIG.INTERVAL.h1,
         w: 6,
-        h: 4,
+        h: 6,
         customConfig: {
           studies: [
             {
@@ -151,7 +151,7 @@ class WidgetManager {
         pair: `${CONFIG.EXCHANGE}:${this.coin}USDT.P`,
         timeFrame: CONFIG.INTERVAL.h4,
         w: 6,
-        h: 4,
+        h: 6,
         customConfig: {
           studies: ["STD;MA%1Cross", "STD;RSI", "STD;Bollinger_Bands"],
         },
