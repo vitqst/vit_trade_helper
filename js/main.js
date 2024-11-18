@@ -74,6 +74,78 @@ const TradingViewConfig = {
   },
 };
 
+class MEXCPriceUpdater {
+  constructor(
+    symbol,
+    titleTemplate = (symbol, price) => `${symbol.toUpperCase()}: $${price}`
+  ) {
+    this.symbol = symbol.toUpperCase(); // MEXC uses uppercase symbols
+    this.titleTemplate = titleTemplate; // Template for updating the title
+    this.socket = null;
+  }
+
+  get socketUrl() {
+    return `wss://wbs.mexc.com/ws`;
+  }
+
+  connect() {
+    if (this.socket) {
+      this.disconnect(); // Ensure any existing connection is closed
+    }
+
+    this.socket = new WebSocket(this.socketUrl);
+
+    this.socket.onopen = () => {
+      console.log(`WebSocket connection opened for ${this.symbol}`);
+      // Subscribe to the ticker channel for the specified symbol
+      const subscribeMessage = {
+        method: "SUBSCRIPTION",
+        params: [`spot@public.deals.v3.api@${this.symbol}`],
+        id: Date.now(),
+      };
+      this.socket.send(JSON.stringify(subscribeMessage));
+    };
+
+    this.socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+
+      // Check if the message is for the expected symbol
+      if (data.c && data.c.endsWith(this.symbol)) {
+        const deals = data.d?.deals;
+        if (deals && deals.length > 0) {
+          const latestTrade = deals[0];
+          const price = parseFloat(latestTrade.p).toFixed(2); // Extract the price
+          document.title = this.titleTemplate(this.symbol, price); // Update the title
+        }
+      }
+    };
+
+    this.socket.onclose = () => {
+      console.warn(`WebSocket connection closed for ${this.symbol}`);
+      document.title = `Connection Closed for ${this.symbol.toUpperCase()}`;
+    };
+
+    this.socket.onerror = (error) => {
+      console.error(`WebSocket error for ${this.symbol}:`, error);
+      document.title = `Error Fetching Price for ${this.symbol.toUpperCase()}`;
+    };
+  }
+
+  disconnect() {
+    if (this.socket) {
+      this.socket.close();
+      console.log(`WebSocket connection closed manually for ${this.symbol}`);
+      this.socket = null;
+    }
+  }
+
+  changeSymbol(newSymbol) {
+    console.log(`Changing symbol to ${newSymbol}`);
+    this.symbol = newSymbol.toUpperCase();
+    this.connect(); // Reconnect with the new symbol
+  }
+}
+
 class BinancePriceUpdater {
   constructor(
     initialSymbol,
@@ -408,7 +480,7 @@ $(document).ready(() => {
 
     if (!priceUpdater) {
       const initialSymbol = `${coin}USDT`;
-      priceUpdater = new BinancePriceUpdater(initialSymbol);
+      priceUpdater = new MEXCPriceUpdater(initialSymbol);
       priceUpdater.connect();
     }
   };
