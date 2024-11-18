@@ -34,6 +34,13 @@
       rel="stylesheet"
       href="/css/components/space.css?t=c578f1da0e9de639d3cf88951aa7f2234249"
     />
+    <style>
+      #pipContainer {
+        width: 0;
+        height: 0;
+        display: none;
+      }
+    </style>
   </head>
   <body>
     <div class="container">
@@ -52,6 +59,9 @@
         </div>
       </div>
     </div>
+    <button id="startPip">Start PIP</button>
+    <button id="stopPip">Stop PIP</button>
+    <video id="pipContainer" muted autoplay></video>
     <script src="js/main.js?t=d0799c6b54e3ec4a2184e240cb65d11a2d112a98"></script>
   </body>
 </html>

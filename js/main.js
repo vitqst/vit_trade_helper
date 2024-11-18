@@ -74,14 +74,142 @@ const TradingViewConfig = {
   },
 };
 
+class PIP {
+  constructor(pipContainer) {
+    this.pipContainer = pipContainer;
+    this.stream = null;
+    this.canvas = null;
+    this.ctx = null;
+  }
+
+  async initializeStream() {
+    this.canvas = document.createElement("canvas");
+    this.canvas.width = 300;
+    this.canvas.height = 100;
+    this.ctx = this.canvas.getContext("2d");
+
+    this.renderCanvas("Initializing...");
+
+    this.stream = this.canvas.captureStream();
+    this.pipContainer.srcObject = this.stream;
+
+    try {
+      await this.pipContainer.play();
+      console.log("Video initialized and playing.");
+    } catch (error) {
+      console.error("Error initializing video:", error);
+    }
+  }
+
+  renderCanvas(content, width = 300, height = 100) {
+    if (!this.canvas || !this.ctx) {
+      console.error("Canvas not initialized.");
+      return;
+    }
+
+    // Update canvas size if needed
+    if (this.canvas.width !== width || this.canvas.height !== height) {
+      this.canvas.width = width;
+      this.canvas.height = height;
+    }
+
+    // Clear the canvas
+    this.ctx.fillStyle = "#000";
+    this.ctx.fillRect(0, 0, width, height);
+
+    // Set up text properties
+    this.ctx.fillStyle = "#fff";
+    this.ctx.textAlign = "center";
+    this.ctx.textBaseline = "middle";
+
+    // Dynamically adjust font size based on canvas size
+    const fontSize = Math.min(width, height) / 10; // Adjust this factor as needed
+    this.ctx.font = `${fontSize}px Arial`;
+
+    // Split content into lines if it's too long
+    const maxWidth = width * 0.9; // 90% of canvas width
+    const lines = this.getLines(this.ctx, content, maxWidth);
+
+    // Calculate starting Y position to center the text block
+    const lineHeight = fontSize * 1.2;
+    const totalTextHeight = lineHeight * lines.length;
+    let startY = (height - totalTextHeight) / 2 + fontSize / 2;
+
+    // Draw each line
+    lines.forEach((line) => {
+      this.ctx.fillText(line, width / 2, startY);
+      startY += lineHeight;
+    });
+  }
+
+  getLines(ctx, text, maxWidth) {
+    const words = text.split(" ");
+    const lines = [];
+    let currentLine = words[0];
+
+    for (let i = 1; i < words.length; i++) {
+      const word = words[i];
+      const width = ctx.measureText(currentLine + " " + word).width;
+      if (width < maxWidth) {
+        currentLine += " " + word;
+      } else {
+        lines.push(currentLine);
+        currentLine = word;
+      }
+    }
+    lines.push(currentLine);
+    return lines;
+  }
+
+  async startPip() {
+    try {
+      if (!this.pipContainer.srcObject) {
+        await this.initializeStream();
+      }
+
+      // Ensure the video is ready before requesting Picture-in-Picture
+      if (this.pipContainer.readyState < 2) {
+        console.warn("Video metadata not loaded, retrying...");
+        await new Promise((resolve) => setTimeout(resolve, 100)); // Wait briefly
+      }
+
+      await this.pipContainer.requestPictureInPicture();
+      console.log("Picture-in-Picture started.");
+    } catch (error) {
+      console.error("Error starting Picture-in-Picture:", error);
+    }
+  }
+
+  async stopPip() {
+    try {
+      if (document.pictureInPictureElement) {
+        await document.exitPictureInPicture();
+        console.log("Exited Picture-in-Picture.");
+      }
+    } catch (error) {
+      console.error("Error exiting Picture-in-Picture:", error);
+    }
+  }
+
+  updateContent(content, width, height) {
+    if (!this.canvas || !this.stream) {
+      console.error("Stream not initialized.");
+      return;
+    }
+
+    this.renderCanvas(content, width, height);
+  }
+
+  isPipActive() {
+    return document.pictureInPictureElement === this.pipContainer;
+  }
+}
+
 class MEXCPriceUpdater {
-  constructor(
-    symbol,
-    titleTemplate = (symbol, price) => `${symbol.toUpperCase()}: $${price}`
-  ) {
-    this.symbol = symbol.toUpperCase(); // MEXC uses uppercase symbols
-    this.titleTemplate = titleTemplate; // Template for updating the title
+  constructor(symbol, onUpdate) {
+    this.symbol = symbol.toUpperCase();
     this.socket = null;
+    this.onUpdate = onUpdate; // Callback to send updates
   }
 
   get socketUrl() {
@@ -90,14 +218,13 @@ class MEXCPriceUpdater {
 
   connect() {
     if (this.socket) {
-      this.disconnect(); // Ensure any existing connection is closed
+      this.disconnect();
     }
 
     this.socket = new WebSocket(this.socketUrl);
 
     this.socket.onopen = () => {
       console.log(`WebSocket connection opened for ${this.symbol}`);
-      // Subscribe to the ticker channel for the specified symbol
       const subscribeMessage = {
         method: "SUBSCRIPTION",
         params: [`spot@public.deals.v3.api@${this.symbol}`],
@@ -109,25 +236,25 @@ class MEXCPriceUpdater {
     this.socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
 
-      // Check if the message is for the expected symbol
       if (data.c && data.c.endsWith(this.symbol)) {
         const deals = data.d?.deals;
         if (deals && deals.length > 0) {
           const latestTrade = deals[0];
-          const price = parseFloat(latestTrade.p).toFixed(2); // Extract the price
-          document.title = this.titleTemplate(this.symbol, price); // Update the title
+          const price = parseFloat(latestTrade.p).toFixed(2);
+          document.title = `${this.symbol}: $${price}`; // Update the title
+          this.onUpdate(`${this.symbol}: $${price}`); // Send the update to PIP
         }
       }
     };
 
     this.socket.onclose = () => {
       console.warn(`WebSocket connection closed for ${this.symbol}`);
-      document.title = `Connection Closed for ${this.symbol.toUpperCase()}`;
+      this.onUpdate(`Connection closed for ${this.symbol}`);
     };
 
     this.socket.onerror = (error) => {
       console.error(`WebSocket error for ${this.symbol}:`, error);
-      document.title = `Error Fetching Price for ${this.symbol.toUpperCase()}`;
+      this.onUpdate(`Error for ${this.symbol}`);
     };
   }
 
@@ -142,7 +269,7 @@ class MEXCPriceUpdater {
   changeSymbol(newSymbol) {
     console.log(`Changing symbol to ${newSymbol}`);
     this.symbol = newSymbol.toUpperCase();
-    this.connect(); // Reconnect with the new symbol
+    this.connect();
   }
 }
 
@@ -461,29 +588,59 @@ class UIManager {
 
 // main.js
 $(document).ready(() => {
-  const main = () => {
-    const coin = Utils.getUrlParam("coin") || CONFIG.DEFAULT_COIN;
-
-    const widgetManager = new WidgetManager(coin);
-    const widgets = widgetManager.getWidgets();
-
-    const gridManager = new GridManager(widgets);
-    gridManager.init();
-    gridManager.renderWidgets();
-    gridManager.adjustMobileLayout();
-
-    const uiManager = new UIManager();
-    uiManager.init(coin);
-
-    // bind events
-    let priceUpdater;
-
-    if (!priceUpdater) {
-      const initialSymbol = `${coin}USDT`;
-      priceUpdater = new MEXCPriceUpdater(initialSymbol);
-      priceUpdater.connect();
+  class App {
+    constructor() {
+      this.coin = Utils.getUrlParam("coin") || CONFIG.DEFAULT_COIN;
+      this.initialSymbol = `${this.coin}USDT`;
+      this.pipContainer = document.getElementById("pipContainer");
     }
-  };
 
-  main();
+    init() {
+      this.initManagers();
+      this.initPIP();
+      this.initPriceUpdater();
+      this.bindEvents();
+    }
+
+    initManagers() {
+      const widgetManager = new WidgetManager(this.coin);
+      const widgets = widgetManager.getWidgets();
+
+      this.gridManager = new GridManager(widgets);
+      this.gridManager.init();
+      this.gridManager.renderWidgets();
+      this.gridManager.adjustMobileLayout();
+
+      this.uiManager = new UIManager();
+      this.uiManager.init(this.coin);
+    }
+
+    initPIP() {
+      this.pip = new PIP(this.pipContainer);
+    }
+
+    initPriceUpdater() {
+      this.priceUpdater = new MEXCPriceUpdater(
+        this.initialSymbol,
+        (content) => {
+          if (this.pip.isPipActive()) {
+            this.pip.updateContent(content);
+          }
+        }
+      );
+      this.priceUpdater.connect();
+    }
+
+    bindEvents() {
+      document
+        .getElementById("startPip")
+        .addEventListener("click", () => this.pip.startPip());
+      document
+        .getElementById("stopPip")
+        .addEventListener("click", () => this.pip.stopPip());
+    }
+  }
+
+  const app = new App();
+  app.init();
 });
