@@ -101,7 +101,26 @@ class WidgetManager {
         w: 6,
         h: 6,
         customConfig: {
-          studies: ["STD;MACD", "STD;Bollinger_Bands"],
+          studies: [
+            {
+              id: "MASimple@tv-basicstudies",
+              inputs: {
+                length: 50,
+              },
+            },
+            {
+              id: "MASimple@tv-basicstudies",
+              inputs: {
+                length: 200,
+              },
+            },
+            {
+              id: "STD;MACD",
+            },
+            {
+              id: "STD;Bollinger_Bands",
+            },
+          ],
         },
       },
       {
@@ -110,7 +129,26 @@ class WidgetManager {
         w: 6,
         h: 6,
         customConfig: {
-          studies: ["STD;MACD", "STD;Bollinger_Bands"],
+          studies: [
+            {
+              id: "MASimple@tv-basicstudies",
+              inputs: {
+                length: 50,
+              },
+            },
+            {
+              id: "MASimple@tv-basicstudies",
+              inputs: {
+                length: 200,
+              },
+            },
+            {
+              id: "STD;MACD",
+            },
+            {
+              id: "STD;Bollinger_Bands",
+            },
+          ],
         },
       },
       {
