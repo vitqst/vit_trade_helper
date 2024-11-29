@@ -84,7 +84,7 @@ class PIP {
 
   async initializeStream() {
     this.canvas = document.createElement("canvas");
-    this.canvas.width = 300;
+    this.canvas.width = 100;
     this.canvas.height = 100;
     this.ctx = this.canvas.getContext("2d");
 
@@ -113,9 +113,8 @@ class PIP {
       this.canvas.height = height;
     }
 
-    // Clear the canvas
-    this.ctx.fillStyle = "#000";
-    this.ctx.fillRect(0, 0, width, height);
+    // Clear the canvas with a transparent background
+    this.ctx.clearRect(0, 0, width, height);
 
     // Set up text properties
     this.ctx.fillStyle = "#fff";
@@ -123,11 +122,17 @@ class PIP {
     this.ctx.textBaseline = "middle";
 
     // Dynamically adjust font size based on canvas size
-    const fontSize = Math.min(width, height) / 10; // Adjust this factor as needed
+    const fontSize = Math.min(width, height) / 10;
     this.ctx.font = `${fontSize}px Arial`;
 
+    // Add shadow to text
+    this.ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+    this.ctx.shadowBlur = 4;
+    this.ctx.shadowOffsetX = 2;
+    this.ctx.shadowOffsetY = 2;
+
     // Split content into lines if it's too long
-    const maxWidth = width * 0.9; // 90% of canvas width
+    const maxWidth = width * 0.9;
     const lines = this.getLines(this.ctx, content, maxWidth);
 
     // Calculate starting Y position to center the text block
@@ -140,6 +145,12 @@ class PIP {
       this.ctx.fillText(line, width / 2, startY);
       startY += lineHeight;
     });
+
+    // Reset shadow settings
+    this.ctx.shadowColor = "transparent";
+    this.ctx.shadowBlur = 0;
+    this.ctx.shadowOffsetX = 0;
+    this.ctx.shadowOffsetY = 0;
   }
 
   getLines(ctx, text, maxWidth) {
@@ -643,7 +654,7 @@ $(document).ready(() => {
         this.initialSymbol,
         (content) => {
           if (this.pip.isPipActive()) {
-            this.pip.updateContent(content);
+            this.pip.updateContent(content, 200, 200);
           }
         }
       );
