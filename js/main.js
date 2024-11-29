@@ -216,6 +216,19 @@ class MEXCPriceUpdater {
     return `wss://wbs.mexc.com/ws`;
   }
 
+  isConnected() {
+    return this.socket && this.socket.readyState === WebSocket.OPEN;
+  }
+
+  isStale() {
+    return Date.now() - this.lastUpdateTime > this.staleThreshold;
+  }
+
+  reconnect() {
+    this.disconnect();
+    this.connect();
+  }
+
   connect() {
     if (this.socket) {
       this.disconnect();
@@ -270,6 +283,12 @@ class MEXCPriceUpdater {
     console.log(`Changing symbol to ${newSymbol}`);
     this.symbol = newSymbol.toUpperCase();
     this.connect();
+  }
+
+  checkConnection() {
+    if (this.socket && this.socket.readyState === WebSocket.CLOSED) {
+      this.connect();
+    }
   }
 }
 
@@ -629,6 +648,14 @@ $(document).ready(() => {
         }
       );
       this.priceUpdater.connect();
+
+      // Set up a periodic check for connection status
+      this.connectionCheckInterval = setInterval(() => {
+        if (!this.priceUpdater.isConnected() || this.priceUpdater.isStale()) {
+          console.log("Price updater disconnected or stale. Reconnecting...");
+          this.priceUpdater.reconnect();
+        }
+      }, 30000); // Check every 30 seconds
     }
 
     bindEvents() {
